@@ -13,7 +13,7 @@ import com.disarm.sanna.pdm.MainActivity;
  */
 public class Toggler extends Activity{
     // Randomly value less than 0.50 will make HotspotActive else WifiActive
-    private static double toggleBetweenHotspotWifi = 0.50;
+    private static double toggleBetweenHotspotWifi = 0.10;
 
     public static  int addIncreasewifi = 5000,wifiIncrease=10000,hpIncrease=10000,addIncreasehp = 5000;
 

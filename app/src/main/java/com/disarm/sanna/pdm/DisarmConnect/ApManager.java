@@ -39,7 +39,7 @@ public class ApManager {
             //Change Name of the Created Hotspot
 
             WifiConfiguration wifiCon = new WifiConfiguration();
-            wifiCon.SSID = "DisarmHotspot";
+            wifiCon.SSID = "DH-" + MyService.phoneVal;
             wifiCon.preSharedKey = "password123";
 
             wifiCon.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);

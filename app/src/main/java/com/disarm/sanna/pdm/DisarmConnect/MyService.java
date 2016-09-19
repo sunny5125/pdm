@@ -19,7 +19,11 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.disarm.sanna.pdm.MainActivity;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Time;
@@ -40,7 +44,7 @@ public class MyService extends Service {
     public static boolean isHotspotOn,c;
     public static WifiInfo wifiInfo;
     public static List<String> IpAddr;
-    public static String mobileAPName = "DisarmHotspot";
+    public static String mobileAPName = "DH";
     public static String dbAPName = "DisarmHotspotDB";
     public FileReader fr = null;
     public static int count=0,startwififirst = 1;
@@ -57,6 +61,7 @@ public class MyService extends Service {
     public WifiConnect wifiC;
     private final IBinder myServiceBinder = new MyServiceBinder();
     public BufferedReader br = null;
+    public static String phoneVal;
     @Override
     public IBinder onBind(Intent intent) {
 
@@ -90,6 +95,20 @@ public class MyService extends Service {
         IntentFilter batfilter = new IntentFilter();
         batfilter.addAction(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(bl, batfilter);
+
+        // Read Source
+        File file = new File(MainActivity.TARGET_DMS_PATH,"source.txt");
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            fis.read(data);
+            fis.close();
+
+            phoneVal = new String(data, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
