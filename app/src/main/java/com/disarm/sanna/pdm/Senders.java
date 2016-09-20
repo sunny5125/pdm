@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class Senders implements Parcelable {
     String number;
+    String name;
     ArrayList<File> allFiles;
     ArrayList<File> textFiles;
     ArrayList<File> imageFiles;
@@ -18,8 +19,9 @@ public class Senders implements Parcelable {
     ArrayList<File> recordingFiles;
     ArrayList<File> smsFiles;
 
-    public Senders(String number) {
+    public Senders(String number, String name) {
         this.number = number;
+        this.name = name;
         allFiles = new ArrayList<>();
         textFiles = new ArrayList<>();
         imageFiles = new ArrayList<>();

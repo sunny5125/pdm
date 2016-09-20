@@ -54,7 +54,7 @@ public class Photo extends Activity {
         File mediaFile;
         group = type;
         groupID = "1";
-        mediaFile = new File(path, "IMG_" + group + "_" + timeStamp + "_" + groupID + ".jpg");
+        mediaFile = new File(path, "IMG_" + group + "_" + timeStamp + "_" + ".jpg");
         return mediaFile;
     }
 

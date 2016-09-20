@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.disarm.sanna.pdm.R;
+import com.disarm.sanna.pdm.Senders;
 
 import java.util.ArrayList;
 
@@ -20,8 +21,10 @@ public class SocialShareChatlistAdapter extends
     private ArrayList<String> names;
     private ArrayList<String> time;
 
-    public SocialShareChatlistAdapter(ArrayList<String> numbers) {
+    public SocialShareChatlistAdapter(ArrayList<String> numbers,
+                                      ArrayList<String> names) {
         this.numbers = numbers;
+        this.names = names;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class SocialShareChatlistAdapter extends
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.number.setText(numbers.get(position));
+        holder.name.setText(names.get(position));
     }
 
     @Override

@@ -14,13 +14,10 @@ import java.util.logging.FileHandler;
 
 public class Logger {
 
-    public static FileHandler logger = null;
     private static String filename = "MapDisarm_Log", logFileUpdated;
     public static File logFile;
     static boolean isExternalStorageAvailable = false;
     static boolean isExternalStorageWriteable = false;
-    public static int flag1 = 1;
-    public static String logFileName;
     static String state = Environment.getExternalStorageState();
     public static String phoneID ;
 

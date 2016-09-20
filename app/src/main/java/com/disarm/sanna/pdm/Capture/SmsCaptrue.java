@@ -99,6 +99,6 @@ public class SmsCaptrue extends DialogFragment implements View.OnClickListener{
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         group = type;
         groupID = "1";
-        return (path + "SMS_" +  group + "_" + timeStamp + "_" + groupID + ".txt");
+        return (path + "SMS_" +  group + "_" + timeStamp + "_" + ".txt");
     }
 }

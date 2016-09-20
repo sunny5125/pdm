@@ -136,6 +136,6 @@ public class AudioCapture extends AppCompatActivity implements View.OnClickListe
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         group = type;
         groupID = "1";
-        return (path + "SVS_" +  group + "_" + timeStamp + "_" + groupID + ".3gp");
+        return (path + "SVS_" +  group + "_" + timeStamp + "_" + ".3gp");
     }
 }

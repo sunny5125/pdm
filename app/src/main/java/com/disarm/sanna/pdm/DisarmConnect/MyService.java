@@ -51,12 +51,13 @@ public class MyService extends Service {
     public static String TAG2 = "WifiConnect";
     public static String TAG3 = "Toggler";
     public static String TAG4 = "Searching DB";
-    Logger logger;
     public Timer_Toggler tt;
     public SearchingDisarmDB sDDB;
     public WifiConnect wifiC;
     private final IBinder myServiceBinder = new MyServiceBinder();
     public BufferedReader br = null;
+    private Logger logger;
+
     @Override
     public IBinder onBind(Intent intent) {
 

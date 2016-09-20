@@ -126,7 +126,7 @@ public class Text extends DialogFragment implements View.OnClickListener, Adapte
         quantity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View v, int i, long l) {
-                if (i != 0){
+                if (i != 0 && i != 6){
                     q = trans_num_array[i].toString();
                 }
 
@@ -159,8 +159,10 @@ public class Text extends DialogFragment implements View.OnClickListener, Adapte
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.save:
-                if (c){
+                if (c && custom.getText().toString().trim().length() != 0) {
                     q = custom.getText().toString();
+                }else{
+                    custom.setError("It can't be blank");
                 }
                 if (h != null && q != null){
                     msgString = new StringBuilder(type + ": " + h + q);

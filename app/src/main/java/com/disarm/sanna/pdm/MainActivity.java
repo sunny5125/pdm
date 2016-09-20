@@ -1,11 +1,14 @@
 package com.disarm.sanna.pdm;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -34,10 +38,12 @@ import com.disarm.sanna.pdm.Adapters.MyAdapter;
 import com.disarm.sanna.pdm.DisarmConnect.MyService;
 import com.disarm.sanna.pdm.Service.SyncService;
 import com.disarm.sanna.pdm.Util.DividerItemDecoration;
+import com.disarm.sanna.pdm.Util.Reset;
 
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
@@ -194,6 +200,75 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }else if (id == R.id.mapView){
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://127.0.0.1:8080/getMapAsset/index.html"));
             startActivity(browserIntent);
+        }else if (id == R.id.reset){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder
+                    .setMessage(R.string.reset_working)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.reset,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    File dir = new File(Environment.getExternalStorageDirectory() + "/DMS/Working");
+                                    if (Reset.deleteContents(dir)) {
+                                        Toast.makeText(MainActivity.this, R.string.reset_done, Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+            alertDialogBuilder.setNegativeButton(R.string.cancel,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = alertDialogBuilder.create();
+            alert.show();
+        }else if (id == R.id.resetall){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder
+                    .setMessage(R.string.reset_all_data)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.reset,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    ProgressDialog pd = new ProgressDialog(MainActivity.this);
+                                    pd.show();
+                                    pd.setMessage("Reset is on its way !");
+                                    File dir = new File(Environment.getExternalStorageDirectory() + "/DMS");
+                                    if (Reset.deleteContents(dir)) {
+                                        pd.setMessage("Reset Done");
+                                        Toast.makeText(MainActivity.this, R.string.reset_done, Toast.LENGTH_SHORT).show();
+                                    }
+                                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.clear();
+                                    editor.commit();
+                                    pd.setMessage("Restarting");
+                                    Intent i = getBaseContext().getPackageManager()
+                                            .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    finish();
+                                    startActivity(i);
+                                    pd.dismiss();
+                                }
+                            });
+            alertDialogBuilder.setNegativeButton(R.string.cancel,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = alertDialogBuilder.create();
+            alert.show();
+        }else if (id == R.id.exit){
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+            int pid = android.os.Process.myPid();
+            android.os.Process.killProcess(pid);
+            System.exit(0);
         }
 
         return super.onOptionsItemSelected(item);
@@ -316,22 +391,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             logger = new Logger(phoneVal);
 
 
             lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             gps_enabled = false;
-            network_enabled = false;
+            //network_enabled = false;
 
             try {
                 gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                //network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
                 Log.v("check","1");
             } catch (Exception ex) {
             }
 
             // Check if gps and network provider is on or off
-            if (!gps_enabled && !network_enabled) {
+            if (!gps_enabled ) {
 
                 Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(myIntent);
@@ -353,8 +429,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 return;
             }
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 1, locationListener);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,3000,1,locationListener);
-            Log.v("check","3");
+            //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,3000,1,locationListener);
+           /* Log.v("check","3");
             if (lm != null) {
                 // Check for lastKnownLocation
                 location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -370,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 
                 }
-            }
+            }*/
         } else {
             enableGPS();
         }

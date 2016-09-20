@@ -42,28 +42,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Photo"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:id="@+id/b_share_photo"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Video"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:id="@+id/b_share_video"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Text"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:id="@+id/b_share_text"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recording"
-            android:layout_weight="25"
+            android:text="Record"
+            android:layout_weight="20"
             android:id="@+id/b_share_recording"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/send"
+            android:layout_weight="20"
+            android:id="@+id/b_share_send"/>
     </LinearLayout>
 </LinearLayout>

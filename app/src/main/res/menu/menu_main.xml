@@ -21,4 +21,20 @@
         app:showAsAction="always"
         android:title="MapView" />
 
+    <item
+        android:id="@+id/reset"
+        android:orderInCategory="100"
+        android:title="@string/reset"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/resetall"
+        android:orderInCategory="100"
+        android:title="@string/resetall"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/exit"
+        android:orderInCategory="100"
+        android:title="@string/exit"
+        app:showAsAction="never" />
 </menu>

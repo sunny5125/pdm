@@ -41,6 +41,12 @@
     <string name="save">save</string>
     <string name="enter_msg">Enter Message</string>
     <string name="cus_input">Custom Input</string>
+    <string name="reset">Reset</string>
+    <string name="reset_working">Reset all collected data !</string>
+    <string name="reset_done">Reset Done !</string>
+    <string name="reset_all_data">Reset all App data !</string>
+    <string name="resetall">Reset All</string>
+    <string name="exit">Exit</string>
 
 
     <string-array name="health_array">

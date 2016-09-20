@@ -1,5 +1,6 @@
 package com.disarm.sanna.pdm;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.disarm.sanna.pdm.Capture.SmsCaptrue;
 import com.disarm.sanna.pdm.Capture.Text;
 import com.disarm.sanna.pdm.Capture.Video;
 import com.disarm.sanna.pdm.Util.DividerItemDecoration;
+import com.disarm.sanna.pdm.Util.Reset;
 
 import java.io.File;
 
@@ -41,6 +43,7 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
     String type,ttlString,dest,latlong;
     Button submit,discard;
     EditText ttl,destination;
+    public static Context contextOfApplication;
     public static int [] prgmImages={R.drawable.camera
                                     ,R.drawable.video_maker
                                     ,R.drawable.audiopocket
@@ -57,6 +60,7 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_list);
+        contextOfApplication = getApplicationContext();
         Intent myIntent = getIntent();
         type = myIntent.getStringExtra("IntentType");
         Log.v("type intent ",type);
@@ -161,6 +165,7 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
 
                 ActivityList.this.finish();
                 break;
+
             case R.id.discard:
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                 alertDialogBuilder
@@ -171,7 +176,7 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
                                         File dir = new File(Environment.getExternalStorageDirectory() + "/DMS/tmp");
-                                        if (deleteContents(dir)) {
+                                        if (Reset.deleteContents(dir)) {
                                             Toast.makeText(ActivityList.this, R.string.files_discarded, Toast.LENGTH_SHORT).show();
                                         }
                                         ActivityList.this.finish();
@@ -194,20 +199,7 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
-    public static boolean deleteContents(File dir) {
-        File[] files = dir.listFiles();
-        boolean success = true;
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    success &= deleteContents(file);
-                }
-                if (!file.delete()) {
-                    Log.w("delete", "Failed to delete " + file);
-                    success = false;
-                }
-            }
-        }
-        return success;
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
     }
 }
