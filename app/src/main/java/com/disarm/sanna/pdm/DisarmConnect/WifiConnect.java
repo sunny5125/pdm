@@ -21,7 +21,6 @@ import java.util.Map;
  */
 public class WifiConnect implements Runnable {
     private android.os.Handler handler;
-    Map allDHDBAvailable = new HashMap<String, Integer>();
     public String otherDH;
     private Context context;
     private FileReader fr= null;
@@ -43,16 +42,7 @@ public class WifiConnect implements Runnable {
             Log.v(MyService.TAG2,"Already Connected DB ");
             Logger.addRecordToLog("Already DB Connected");
 
-            // Check DB strength and disconnect connection if required
-            String connectedDB = MyService.wifi.getConnectionInfo().getSSID().toString().replace("\"","");
-            List<ScanResult> allScanResult = MyService.wifi.getScanResults();
-            for (ScanResult scanResult : allScanResult) {
-                otherDH = scanResult.SSID.toString();
-                if(otherDH.contains("DH-") || otherDH.contains("DB-")) {
-                    allDHDBAvailable.put(scanResult.SSID,scanResult.level);
-                }
-            }
-            Log.v("All DHDBAvailable:", String.valueOf(Arrays.asList(allDHDBAvailable.toString())));
+
 
         }
         else if(ssidName.startsWith(MyService.mobileAPName)) {
@@ -79,19 +69,28 @@ public class WifiConnect implements Runnable {
             // Connecting to DisarmHotspot WIfi on Button Click
 
             List<ScanResult> allScanResults = MyService.wifi.getScanResults();
+            int DBLevel=0;
             if (allScanResults.toString().contains("DisarmHotspotDB")) {
-                Log.v(MyService.TAG2,"Connecting DisarmDB");
+                for (ScanResult scanResult : allScanResults) {
+                    otherDH = scanResult.SSID.toString();
+                    if(otherDH.contains("DisarmHotspotDB")) {
+                        DBLevel = scanResult.level;
+                    }
+                }
+                if(DBLevel > -50) {
+                    Log.v(MyService.TAG2, "Connecting DisarmDB");
 
-                String ssid = "DisarmHotspotDB";
+                    String ssid = "DisarmHotspotDB";
 
-                WifiConfiguration wc = new WifiConfiguration();
-                wc.SSID = "\"" + ssid + "\""; //IMPORTANT! This should be in Quotes!!
-                wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                int res = MyService.wifi.addNetwork(wc);
-                boolean b = MyService.wifi.enableNetwork(res, true);
-                Log.v(MyService.TAG2, "Connected");
+                    WifiConfiguration wc = new WifiConfiguration();
+                    wc.SSID = "\"" + ssid + "\""; //IMPORTANT! This should be in Quotes!!
+                    wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                    int res = MyService.wifi.addNetwork(wc);
+                    boolean b = MyService.wifi.enableNetwork(res, true);
+                    Log.v(MyService.TAG2, "Connected");
 
-                Logger.addRecordToLog("DB Connected Successfully");
+                    Logger.addRecordToLog("DB Connected Successfully");
+                }
             }
             else
             {
@@ -106,7 +105,7 @@ public class WifiConnect implements Runnable {
                 }
 
                 Log.v("AllDH Available:",Arrays.asList(allDHAvailable).toString());
-
+                Logger.addRecordToLog("All DH available:" + Arrays.asList(allDHAvailable).toString());
                 // Find key with the maximum value from allDHAvailable
                 String bestFoundSSID="";
                 int maxValueInMap = 0;
@@ -117,6 +116,7 @@ public class WifiConnect implements Runnable {
                         Map.Entry<String, Integer> pair = (Map.Entry) it.next();
                         if (pair.getValue() == maxValueInMap) {
                             Log.v("Best Found SSID:", pair.getKey());     // Print the key with max value
+                            Logger.addRecordToLog("Best Found SSID"+ ',' + pair.getKey());
                             bestFoundSSID = pair.getKey().toString();
                         }
                     }
@@ -134,7 +134,7 @@ public class WifiConnect implements Runnable {
                 boolean b = MyService.wifi.enableNetwork(res, true);
                 Log.v(MyService.TAG2, "Connected");
 
-                Logger.addRecordToLog("DH Connected Successfully");
+                Logger.addRecordToLog("DH Connected Successfully," + bestFoundSSID);
 
 
             }

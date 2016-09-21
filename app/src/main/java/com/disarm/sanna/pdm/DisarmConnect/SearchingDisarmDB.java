@@ -40,6 +40,8 @@ public class SearchingDisarmDB implements Runnable {
         if (allScanResult.toString().contains(MyService.dbAPName)) {
             Log.v(MyService.TAG4, "Connecting DisarmDB");
 
+
+
             handler.removeCallbacksAndMessages(null);
             String ssid = MyService.dbAPName;
             WifiConfiguration wc = new WifiConfiguration();
@@ -48,6 +50,55 @@ public class SearchingDisarmDB implements Runnable {
             int res = MyService.wifi.addNetwork(wc);
             boolean b = MyService.wifi.enableNetwork(res, true);
             Log.v(MyService.TAG4, "Connected to DB");
+
+            // Get Strength of connected DB Level
+            int numOfLevels = 5;
+            WifiInfo wifiInfo = MyService.wifi.getConnectionInfo();
+            int connectedDBLevel = MyService.wifi.calculateSignalLevel(wifiInfo.getRssi(),numOfLevels);
+
+            // Check DB strength and disconnect connection if required
+            Log.v("Checking for other DH:",".");
+            String otherDH="";
+            Map allDHDBAvailable = new HashMap<String, Integer>();
+
+            for (ScanResult scanResult : allScanResult) {
+                otherDH = scanResult.SSID.toString();
+                if(otherDH.contains("DH-") || otherDH.contains("DB")) {
+                    allDHDBAvailable.put(scanResult.SSID,scanResult.level);
+                }
+            }
+            Log.v("All DHDBAvailable:", String.valueOf(Arrays.asList(allDHDBAvailable.toString())));
+            String bestFoundSSID="";
+            int maxValueInMap = 0;
+            try {
+                maxValueInMap = (int) Collections.max(allDHDBAvailable.values());  // This will return max value in the Hashmap
+                Iterator it = allDHDBAvailable.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Integer> pair = (Map.Entry) it.next();
+                    if (pair.getValue() == maxValueInMap) {
+                        Log.v("Best Found SSID:", pair.getKey());     // Print the key with max value
+                        bestFoundSSID = pair.getKey().toString();
+                    }
+                }
+            }
+            catch (Exception e)
+            {}
+            if((bestFoundSSID.toString() != connectedDH) && (connectedDBLevel > 1))
+            {
+                Log.v("Found:",bestFoundSSID.toString() + " ," + connectedDBLevel);
+
+                String pass = "password123";
+                wc.SSID = "\"" + bestFoundSSID + "\""; //IMPORTANT! This should be in Quotes!!
+                wc.preSharedKey = "\""+ pass +"\"";
+                wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                res = MyService.wifi.addNetwork(wc);
+                b = MyService.wifi.enableNetwork(res, true);
+                Log.v(MyService.TAG2, "Connected");
+            }
+            else
+            {
+                Log.v("Connected DB Level:",String.valueOf(connectedDBLevel));
+            }
         }
         else
         {
@@ -71,6 +122,8 @@ public class SearchingDisarmDB implements Runnable {
                     if (pair.getValue() == maxValueInMap) {
                         Log.v("Best Found SSID:", pair.getKey());     // Print the key with max value
                         bestFoundSSID = pair.getKey().toString();
+                        Logger.addRecordToLog("Best Found SSID"+ ',' + pair.getKey());
+
                     }
                 }
                 Log.v("Better DH: ",bestFoundSSID.toString());
