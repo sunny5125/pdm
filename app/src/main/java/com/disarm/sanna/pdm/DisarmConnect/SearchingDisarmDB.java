@@ -1,5 +1,6 @@
 package com.disarm.sanna.pdm.DisarmConnect;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -21,7 +22,7 @@ import java.util.StringTokenizer;
 public class SearchingDisarmDB implements Runnable {
     private android.os.Handler handler;
     private Context context;
-    private int timerDBSearch = 5000;
+    private int timerDBSearch = 2000;
 
     public SearchingDisarmDB(android.os.Handler handler, Context context)
     {
@@ -33,6 +34,7 @@ public class SearchingDisarmDB implements Runnable {
     @Override
     public void run()
     {
+        MyService.wifi.startScan();
         String connectedDH = MyService.wifi.getConnectionInfo().getSSID().toString().replace("\"","");
         List<ScanResult> allScanResult = MyService.wifi.getScanResults();
 
@@ -104,15 +106,16 @@ public class SearchingDisarmDB implements Runnable {
         {
             Map allDHAvailable = new HashMap<String, Integer>();
             String otherDH="";
-            if(connectedDH.contains("DH-")) {
-               Log.v("Connected Wifi:", connectedDH);
-                for (ScanResult scanResult : allScanResult) {
-                    otherDH = scanResult.SSID.toString();
-                    if(otherDH.contains("DH-")) {
-                        allDHAvailable.put(scanResult.SSID,scanResult.level);
-                    }
+            Log.v("Connected Wifi:", connectedDH);
+            for (ScanResult scanResult : allScanResult) {
+                otherDH = scanResult.SSID.toString();
+                if(otherDH.contains("DH-")) {
+                    Log.v("Other DH available: ",otherDH.toString());
+                    allDHAvailable.put(scanResult.SSID,scanResult.level);
                 }
             }
+
+
             try {
                 String bestFoundSSID="";
                 int maxValueInMap = (int) Collections.max(allDHAvailable.values());  // This will return max value in the Hashmap
@@ -127,19 +130,15 @@ public class SearchingDisarmDB implements Runnable {
                     }
                 }
                 Log.v("Better DH: ",bestFoundSSID.toString());
-                if(!(connectedDH.toString().equals(bestFoundSSID.toString())))
-                {
-                    String pass = "password123";
-                    WifiConfiguration wc = new WifiConfiguration();
-                    wc.SSID = "\"" + bestFoundSSID + "\""; //IMPORTANT! This should be in Quotes!!
-                    wc.preSharedKey = "\""+ pass +"\"";
-                    wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-                    //wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                    int res = MyService.wifi.addNetwork(wc);
-                    boolean b = MyService.wifi.enableNetwork(res, true);
-                    Log.v("Changed DH connection:",connectedDH + " to " + bestFoundSSID);
-                }
-            }
+                String pass = "password123";
+                WifiConfiguration wc = new WifiConfiguration();
+                wc.SSID = "\"" + bestFoundSSID + "\""; //IMPORTANT! This should be in Quotes!!
+                wc.preSharedKey = "\""+ pass +"\"";
+                wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                //wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                int res = MyService.wifi.addNetwork(wc);
+                boolean b = MyService.wifi.enableNetwork(res, true);
+        }
             catch (Exception e)
             {}
             Log.v("All DH Available:", String.valueOf(Arrays.asList(allDHAvailable.toString())));
