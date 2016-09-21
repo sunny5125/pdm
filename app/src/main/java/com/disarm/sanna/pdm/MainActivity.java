@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     String phoneVal="DefaultNode";
     Logger logger;
     static String root = Environment.getExternalStorageDirectory().toString();
-    final static String TARGET_DMS_PATH = root + "/DMS/";
+    public final static String TARGET_DMS_PATH = root + "/DMS/";
     public static int [] prgmNameList={R.string.health,
                                           R.string.food,
                                           R.string.shelter,
@@ -317,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 e.printStackTrace();
             }
             logger = new Logger(phoneVal);
+
 
 
             lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

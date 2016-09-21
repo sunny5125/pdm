@@ -113,7 +113,7 @@ public class Timer_Toggler implements Runnable{
             Log.v(MyService.TAG1, "DisarmHotspotDB Not Toggling");
 
         }
-        else if (MyService.checkWifiState.contains("DisarmHotspot")) {
+        else if (MyService.checkWifiState.contains(MyService.mobileAPName)) {
             /////////////////////////
            // this.handler.post(searchingDisarmDB);
             Log.v(MyService.TAG1, "DisarmHotspot Not Toggling");

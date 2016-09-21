@@ -12,15 +12,14 @@ import android.util.Log;
 import java.lang.reflect.Method;
 
 public class ApManager {
-
     private static final String TAG = "AP Creation";
     //check whether wifi hotspot on or off
     public static boolean isApOn(Context context) {
-        WifiManager wifimanager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
         try {
-            Method method = wifimanager.getClass().getDeclaredMethod("isWifiApEnabled");
+            Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
             method.setAccessible(true);
-            return (Boolean) method.invoke(wifimanager);
+            return (Boolean) method.invoke(wifiManager);
         }
         catch (Throwable ignored) {}
         return false;
@@ -33,34 +32,30 @@ public class ApManager {
         WifiConfiguration wificonfiguration = null;
         try {
             // if WiFi is on, turn it off
-            if(isApOn(context)) {
+            if (isApOn(context)) {
                 wifimanager.setWifiEnabled(false);
             }
+            WifiConfiguration netConfig = new WifiConfiguration();
             //Change Name of the Created Hotspot
-            try {
-                Method getConfigMethod = wifimanager.getClass().getMethod("getWifiApConfiguration");
-                WifiConfiguration wifiConfig = (WifiConfiguration) getConfigMethod.invoke(wifimanager);
-                wifiConfig.allowedAuthAlgorithms.clear();
-                wifiConfig.allowedGroupCiphers.clear();
-                wifiConfig.allowedKeyManagement.clear();
-                wifiConfig.allowedPairwiseCiphers.clear();
-                wifiConfig.allowedProtocols.clear();
-                wifiConfig.SSID = MyService.mobileAPName;
-                wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 
+            WifiConfiguration wifiCon = new WifiConfiguration();
+            wifiCon.SSID = "DH-" + MyService.phoneVal;
+            wifiCon.preSharedKey = "password123";
+
+            wifiCon.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+            wifiCon.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            wifiCon.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            wifiCon.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+            try {
                 Method setWifiApMethod = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-                boolean apstatus=(Boolean) setWifiApMethod.invoke(wifimanager, wifiConfig,true);
+                boolean apstatus = (Boolean) setWifiApMethod.invoke(wifimanager, wifiCon, true);
+            } catch (Exception e) {
+
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            Method method = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-            method.invoke(wifimanager, wificonfiguration, !isApOn(context));
-            return true;
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        catch (Exception e)
+        {}
+
         return false;
     }
 
