@@ -21,6 +21,8 @@ import java.util.Map;
  */
 public class WifiConnect implements Runnable {
     private android.os.Handler handler;
+    Map allDHDBAvailable = new HashMap<String, Integer>();
+    public String otherDH;
     private Context context;
     private FileReader fr= null;
     private BufferedReader br = null;
@@ -40,6 +42,17 @@ public class WifiConnect implements Runnable {
         if(ssidName.contains(MyService.dbAPName)) {
             Log.v(MyService.TAG2,"Already Connected DB ");
             Logger.addRecordToLog("Already DB Connected");
+
+            // Check DB strength and disconnect connection if required
+            String connectedDB = MyService.wifi.getConnectionInfo().getSSID().toString().replace("\"","");
+            List<ScanResult> allScanResult = MyService.wifi.getScanResults();
+            for (ScanResult scanResult : allScanResult) {
+                otherDH = scanResult.SSID.toString();
+                if(otherDH.contains("DH-") || otherDH.contains("DB-")) {
+                    allDHDBAvailable.put(scanResult.SSID,scanResult.level);
+                }
+            }
+            Log.v("All DHDBAvailable:", String.valueOf(Arrays.asList(allDHDBAvailable.toString())));
 
         }
         else if(ssidName.startsWith(MyService.mobileAPName)) {
@@ -96,16 +109,20 @@ public class WifiConnect implements Runnable {
 
                 // Find key with the maximum value from allDHAvailable
                 String bestFoundSSID="";
-                int maxValueInMap= (int) Collections.max(allDHAvailable.values());  // This will return max value in the Hashmap
-                Iterator it = allDHAvailable.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry<String,Integer> pair = (Map.Entry)it.next();
-                    if (pair.getValue()==maxValueInMap) {
-                        Log.v("Best Found SSID:",pair.getKey());     // Print the key with max value
-                        bestFoundSSID = pair.getKey().toString();
+                int maxValueInMap = 0;
+                try {
+                    maxValueInMap = (int) Collections.max(allDHAvailable.values());  // This will return max value in the Hashmap
+                    Iterator it = allDHAvailable.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry<String, Integer> pair = (Map.Entry) it.next();
+                        if (pair.getValue() == maxValueInMap) {
+                            Log.v("Best Found SSID:", pair.getKey());     // Print the key with max value
+                            bestFoundSSID = pair.getKey().toString();
+                        }
                     }
                 }
-
+                catch (Exception e)
+                {}
                 // Connect to the best found network
                 String pass = "password123";
                 WifiConfiguration wc = new WifiConfiguration();

@@ -3,10 +3,16 @@ package com.disarm.sanna.pdm.DisarmConnect;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -27,16 +33,13 @@ public class SearchingDisarmDB implements Runnable {
     @Override
     public void run()
     {
+        String connectedDH = MyService.wifi.getConnectionInfo().getSSID().toString().replace("\"","");
+        List<ScanResult> allScanResult = MyService.wifi.getScanResults();
+
         Log.v(MyService.TAG4,"searching DB");
-        List<ScanResult> allScanResults = MyService.wifi.getScanResults();
-        if (allScanResults.toString().contains(MyService.dbAPName)) {
+        if (allScanResult.toString().contains(MyService.dbAPName)) {
             Log.v(MyService.TAG4, "Connecting DisarmDB");
 
-            // compare signal level
-            int level = compareSignalLevel(allScanResults);
-            Log.v("Level:" , String.valueOf(level));
-
-            //handler.removeCallbacks(WifiConnect.class);
             handler.removeCallbacksAndMessages(null);
             String ssid = MyService.dbAPName;
             WifiConfiguration wc = new WifiConfiguration();
@@ -46,22 +49,49 @@ public class SearchingDisarmDB implements Runnable {
             boolean b = MyService.wifi.enableNetwork(res, true);
             Log.v(MyService.TAG4, "Connected to DB");
         }
-        else {
-            Log.v(MyService.TAG4,"DisarmHotspotDB not found");
+        else
+        {
+            Map allDHAvailable = new HashMap<String, Integer>();
+            String otherDH="";
+            if(connectedDH.contains("DH-")) {
+               Log.v("Connected Wifi:", connectedDH);
+                for (ScanResult scanResult : allScanResult) {
+                    otherDH = scanResult.SSID.toString();
+                    if(otherDH.contains("DH-")) {
+                        allDHAvailable.put(scanResult.SSID,scanResult.level);
+                    }
+                }
+            }
+            try {
+                String bestFoundSSID="";
+                int maxValueInMap = (int) Collections.max(allDHAvailable.values());  // This will return max value in the Hashmap
+                Iterator it = allDHAvailable.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Integer> pair = (Map.Entry) it.next();
+                    if (pair.getValue() == maxValueInMap) {
+                        Log.v("Best Found SSID:", pair.getKey());     // Print the key with max value
+                        bestFoundSSID = pair.getKey().toString();
+                    }
+                }
+                Log.v("Better DH: ",bestFoundSSID.toString());
+                if(!(connectedDH.toString().equals(bestFoundSSID.toString())))
+                {
+                    String pass = "password123";
+                    WifiConfiguration wc = new WifiConfiguration();
+                    wc.SSID = "\"" + bestFoundSSID + "\""; //IMPORTANT! This should be in Quotes!!
+                    wc.preSharedKey = "\""+ pass +"\"";
+                    wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                    //wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                    int res = MyService.wifi.addNetwork(wc);
+                    boolean b = MyService.wifi.enableNetwork(res, true);
+                    Log.v("Changed DH connection:",connectedDH + " to " + bestFoundSSID);
+                }
+            }
+            catch (Exception e)
+            {}
+            Log.v("All DH Available:", String.valueOf(Arrays.asList(allDHAvailable.toString())));
         }
         handler.postDelayed(this, timerDBSearch);
-    }
-    public int compareSignalLevel(List<ScanResult> allScanResults)
-    {
-        for (ScanResult scanResult : allScanResults) {
-            if(scanResult.SSID.toString().equals(MyService.dbAPName)) {
-                Log.v("SSID:",scanResult.SSID.toString());
-                int level =  WifiManager.calculateSignalLevel(scanResult.level, 5);
-                return level;
-
-            }
-        }
-        return 0;
     }
 
 }

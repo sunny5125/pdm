@@ -58,6 +58,7 @@ public class MyService extends Service {
     Logger logger;
     public Timer_Toggler tt;
     public SearchingDisarmDB sDDB;
+    public SearchingBestDisarmDH sBDDH;
     public WifiConnect wifiC;
     private final IBinder myServiceBinder = new MyServiceBinder();
     public BufferedReader br = null;
@@ -131,6 +132,8 @@ public class MyService extends Service {
         tt = new Timer_Toggler(handler,getApplicationContext());
         wifiC = new WifiConnect(handler,getApplicationContext());
         sDDB = new SearchingDisarmDB(handler,getApplicationContext());
+       // sBDDH = new SearchingBestDisarmDH(handler,getApplicationContext());
+
 
 
         return START_STICKY;
