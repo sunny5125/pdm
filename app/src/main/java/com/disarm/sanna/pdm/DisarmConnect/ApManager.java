@@ -5,13 +5,18 @@ package com.disarm.sanna.pdm.DisarmConnect;
  */
 
 import android.content.Context;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.disarm.sanna.pdm.MainActivity;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
+
+import static com.disarm.sanna.pdm.DisarmConnect.MyService.wifiScanList;
 
 public class ApManager {
 
@@ -28,12 +33,12 @@ public class ApManager {
         return false;
     }
 
-
     // toggle wifi hotspot on or off
     public static boolean configApState(Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
         WifiConfiguration wificonfiguration = null;
         try {
+
             // if WiFi is on, turn it off
             if(isApOn(context)) {
                 wifimanager.setWifiEnabled(false);
@@ -42,6 +47,11 @@ public class ApManager {
             try {
                 Method getConfigMethod = wifimanager.getClass().getMethod("getWifiApConfiguration");
                 WifiConfiguration wifiConfig = (WifiConfiguration) getConfigMethod.invoke(wifimanager);
+
+                // Find the best channel for the hotspot to be created
+                // Set the channel of WifiConfiguration
+                wifiConfig.getClass().getField("channel").setInt(wifiConfig,12);
+
                 wifiConfig.allowedAuthAlgorithms.clear();
                 wifiConfig.allowedGroupCiphers.clear();
                 wifiConfig.allowedKeyManagement.clear();
