@@ -48,6 +48,7 @@
     <string name="reset_all_data">Reset all App data !</string>
     <string name="resetall">Reset All</string>
     <string name="exit">Exit</string>
+    <string name="text_Emulation">Emulation</string>
 
 
     <string-array name="health_array">

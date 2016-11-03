@@ -22,7 +22,7 @@
         card_view:cardUseCompatPadding="true"
         android:id="@+id/card_view"
         android:layout_width="wrap_content"
-        android:layout_height="165dp"
+        android:layout_height="200dp"
         >
 
         <RelativeLayout
@@ -146,6 +146,33 @@
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/gpstoggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/rela3"
+                android:layout_below="@+id/rela2"
+                android:layout_alignParentStart="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="49dp"
+                    android:text="@string/text_Emulation"
+                    android:id="@+id/textView4"
+                    android:layout_weight="0.36"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="17dp"
+                    android:layout_marginTop="5dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/emulation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private SwitchCompat syncTog, connTog, gpsTog;
+    private SwitchCompat syncTog, connTog, gpsTog, emulation;
     SyncService syncService;
     MyService myService;
     float speed;
@@ -93,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         syncTog = (SwitchCompat) findViewById(R.id.synctoggle);
         connTog = (SwitchCompat) findViewById(R.id.conntoggle);
         gpsTog = (SwitchCompat) findViewById(R.id.gpstoggle);
+        // Emulation code
+        emulation = (SwitchCompat) findViewById(R.id.emulation);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         textConnect = (TextView) findViewById(R.id.textView12);
 
@@ -136,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         syncTog.setOnCheckedChangeListener(this);
         connTog.setOnCheckedChangeListener(this);
         gpsTog.setOnCheckedChangeListener(this);
+        // EMulation oncheck
+        emulation.setOnCheckedChangeListener(this);
 
         boolean c = isMyServiceRunning(bishakh.psync.SyncService.class);
         if (c)
@@ -149,6 +154,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         else
             connTog.setChecked(false);
 
+        // EMulation check on or off
+        /*boolean e = isMyServiceRunning(MyService.class);
+        if (d)
+            connTog.setChecked(true);
+        else
+            connTog.setChecked(false);
+        */
 
     }
 
@@ -205,6 +217,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     }
                 }
                 break;
+
+            case R.id.emulation:
+                if(b)
+                {
+                    Log.v("Emulation Started:"," HA AHAHA");
+                }
+                else
+                {
+                    Log.v("Emulation Stopped"," THANK YOU");
+                }
+                break;
+
         }
     }
 
