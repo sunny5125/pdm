@@ -9,22 +9,77 @@ import android.util.Log;
 import com.disarm.sanna.pdm.MainActivity;
 import com.disarm.sanna.pdm.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 /**
  * Created by hridoy on 19/8/16.
  */
 public class Toggler extends Activity{
     // Randomly value less than 0.50 will make HotspotActive else WifiActive
-    private static double toggleBetweenHotspotWifi = 0.50;
+    private static double toggleBetweenHotspotWifi = 0.90;
 
     public static  int addIncreasewifi = 5000,wifiIncrease= 5000,hpIncrease=5000,addIncreasehp = 5000;
 
     // max increase of Wifi and HP Value
     private static int maxWifiIncrease = 35000;
     private static int maxHPIncrease = 35000;
+    public static ArrayList<Integer> allFrequency = new ArrayList<>();
 
     // Set hotspot creation minimum battery level
     private static double minimumBatteryLevel = 10;
 
+    public static int convertFrequencyToChannel(int freq) {
+        if (freq >= 2412 && freq <= 2484) {
+            return (freq - 2412) / 5 + 1;
+        } else if (freq >= 5170 && freq <= 5825) {
+            return (freq - 5170) / 5 + 34;
+        } else {
+            return -1;
+        }
+    }
+
+    public static int findChannelWeight()
+    {
+        // Get frequency of all the channel available
+        for ( int i = 0 ; i < MyService.wifiScanList.size();i++) {
+            allFrequency.add(convertFrequencyToChannel(MyService.wifiScanList.get(i).frequency));
+            Log.v("Channel: ", String.valueOf(convertFrequencyToChannel(MyService.wifiScanList.get(i).frequency)));
+        }
+        Log.v("All frequency:",allFrequency.toString());
+
+        int channelArray[] = new int[15];
+
+        // Fill all the elements with 0
+        Arrays.fill(channelArray,0);
+
+        // Increment the value of array elements for each channel
+        for (int s:allFrequency)
+        {
+            channelArray[s]++;
+        }
+
+        // Find minimum value from the channel array
+        int small = channelArray[0];
+        int index = 0;
+        for (int i = 0; i < channelArray.length; i++) {
+            if (channelArray[i] < small) {
+                small = channelArray[i];
+                index = i;
+            }
+        }
+        Log.v("Channel Array:",Arrays.toString(channelArray));
+        Log.v("Minimum Channel Value:", String.valueOf(small));
+
+        return 1;
+    }
     public static void toggle(Context c){
         Log.v(MyService.TAG3, "Toggling randomly!!!");
 
@@ -51,6 +106,9 @@ public class Toggler extends Activity{
             // Set text to textConnect TextView
             String apHotspotName = "DH" + MyService.phoneVal;
 //            MainActivity.textConnect.setText(apHotspotName);
+
+            // Find channel weight of all Wifis
+            int bestAvailableChannel = findChannelWeight();
 
             // Hotspot Mode Activated
             Log.v(MyService.TAG1,"hptoggling for " +String.valueOf(addIncreasehp));

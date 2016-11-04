@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             R.string.shelter,
             R.string.victim};
     private boolean doubleBackToExitPressedOnce = false;
-
+    public String TAG_Emulation = "Emulator";
+    public Emulator emulator;
 
     public interface ClickListener {
         void onClick(View view, int position);
@@ -154,14 +155,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         else
             connTog.setChecked(false);
 
-        // EMulation check on or off
-        /*boolean e = isMyServiceRunning(MyService.class);
-        if (d)
-            connTog.setChecked(true);
-        else
-            connTog.setChecked(false);
-        */
 
+        // Read Source name for PEerID
+        // Read Device source from ConfigFile.txt
+        File file = new File(TARGET_DMS_PATH,"source.txt");
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            fis.read(data);
+            fis.close();
+
+            this.phoneVal = new String(data, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Create Emulator object
+        this.emulator = new Emulator(this.phoneVal);
     }
 
     @Override
@@ -221,14 +232,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.emulation:
                 if(b)
                 {
-                    Log.v("Emulation Started:"," HA AHAHA");
+                    emulator.startEmulator();
+                    Log.v(TAG_Emulation,"Emulation Started");
+
                 }
                 else
                 {
-                    Log.v("Emulation Stopped"," THANK YOU");
+                    emulator.stopEmulator();
+                    Log.v(TAG_Emulation,"Emulation Stopped");
                 }
                 break;
-
         }
     }
 
@@ -435,20 +448,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (statusOfGPS) {
             // Call logger constructor using phoneVal
-            // Read Device source from ConfigFile.txt
-            File file = new File(TARGET_DMS_PATH,"source.txt");
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(file);
-                byte[] data = new byte[(int) file.length()];
-                fis.read(data);
-                fis.close();
-
-                phoneVal = new String(data, "UTF-8");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             logger = new Logger(phoneVal);
 
 

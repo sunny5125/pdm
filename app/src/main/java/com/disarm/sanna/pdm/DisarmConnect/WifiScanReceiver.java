@@ -15,12 +15,12 @@ public class WifiScanReceiver extends BroadcastReceiver {
     public static String wifis[]={"None"};
     public void onReceive(Context c, Intent intent) {
 
-        List<ScanResult> wifiScanList = MyService.wifi.getScanResults();
-        wifis = new String[wifiScanList.size()];
+        MyService.wifiScanList = MyService.wifi.getScanResults();
+        wifis = new String[MyService.wifiScanList.size()];
 
-        for(int i = 0; i < wifiScanList.size(); i++){
-            wifis[i] = String.valueOf(wifiScanList.get(i));
-            Log.v("Available Networks : ", wifiScanList.get(i).SSID);
+        for(int i = 0; i < MyService.wifiScanList.size(); i++){
+            wifis[i] = String.valueOf(MyService.wifiScanList.get(i));
+            Log.v("Available Networks : ", MyService.wifiScanList.get(i).SSID);
         }
 
     }
