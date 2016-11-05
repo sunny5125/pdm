@@ -42,6 +42,9 @@ public class ApManager {
             try {
                 Method getConfigMethod = wifimanager.getClass().getMethod("getWifiApConfiguration");
                 WifiConfiguration wifiConfig = (WifiConfiguration) getConfigMethod.invoke(wifimanager);
+
+                // Created hotspot in the best available channel
+                wifiConfig.getClass().getField("channel").setInt(wifiConfig,MyService.bestAvailableChannel);
                 wifiConfig.allowedAuthAlgorithms.clear();
                 wifiConfig.allowedGroupCiphers.clear();
                 wifiConfig.allowedKeyManagement.clear();

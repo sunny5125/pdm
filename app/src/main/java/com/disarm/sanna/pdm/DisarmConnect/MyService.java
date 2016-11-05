@@ -66,6 +66,7 @@ public class MyService extends Service {
     public static String phoneVal;
     public static String presentState="wifi";
     public static List<ScanResult> wifiScanList;
+    public static int bestAvailableChannel;
 
     @Override
     public IBinder onBind(Intent intent) {

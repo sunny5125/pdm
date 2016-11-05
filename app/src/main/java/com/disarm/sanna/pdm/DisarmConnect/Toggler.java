@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -50,8 +51,9 @@ public class Toggler extends Activity{
     {
         // Get frequency of all the channel available
         for ( int i = 0 ; i < MyService.wifiScanList.size();i++) {
+
             allFrequency.add(convertFrequencyToChannel(MyService.wifiScanList.get(i).frequency));
-            Log.v("Channel: ", String.valueOf(convertFrequencyToChannel(MyService.wifiScanList.get(i).frequency)));
+            Log.v("Channel  + AP: ", String.valueOf(convertFrequencyToChannel(MyService.wifiScanList.get(i).frequency)) + "->" + String.valueOf(MyService.wifiScanList.get(i).SSID));
         }
         Log.v("All frequency:",allFrequency.toString());
 
@@ -69,7 +71,7 @@ public class Toggler extends Activity{
         // Find minimum value from the channel array
         int small = channelArray[0];
         int index = 0;
-        for (int i = 0; i < channelArray.length; i++) {
+        for (int i = 1; i < channelArray.length; i++) {
             if (channelArray[i] < small) {
                 small = channelArray[i];
                 index = i;
@@ -78,7 +80,23 @@ public class Toggler extends Activity{
         Log.v("Channel Array:",Arrays.toString(channelArray));
         Log.v("Minimum Channel Value:", String.valueOf(small));
 
-        return 1;
+        // Find in channel array the elements with minimum channel value
+        ArrayList bestFoundAvailableChannels = new ArrayList();
+        for(int items = 0;items < channelArray.length;items++)
+        {
+            if(channelArray[items] == small)
+            {
+                bestFoundAvailableChannels.add(items);
+            }
+        }
+
+        Log.v("Best Found Available Channels : ",Arrays.deepToString(bestFoundAvailableChannels.toArray()));
+
+        // Find a random available channel from best found available channels
+        Random rand = new Random();
+        Integer randGeneratedBestFoundChannel = (Integer) bestFoundAvailableChannels.get(rand.nextInt(bestFoundAvailableChannels.size()));
+        Log.v("Generated Random Available Channel:" ,randGeneratedBestFoundChannel.toString() );
+        return randGeneratedBestFoundChannel;
     }
     public static void toggle(Context c){
         Log.v(MyService.TAG3, "Toggling randomly!!!");
@@ -108,7 +126,7 @@ public class Toggler extends Activity{
 //            MainActivity.textConnect.setText(apHotspotName);
 
             // Find channel weight of all Wifis
-            int bestAvailableChannel = findChannelWeight();
+            MyService.bestAvailableChannel = findChannelWeight();
 
             // Hotspot Mode Activated
             Log.v(MyService.TAG1,"hptoggling for " +String.valueOf(addIncreasehp));
