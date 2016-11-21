@@ -67,9 +67,11 @@ public class SearchingDisarmDB implements Runnable {
             int level = findDBSignalLevel(allScanResults);
             if (level < minDBLevel)
             {
-                if(MyService.wifi.disconnect()) {
-                    Logger.addRecordToLog("DB Disconnected as Level = " + level);
-                    Log.v(MyService.TAG1,"DB Disconnected as Level = " + level);
+                if(connectedSSID.contains("DB")) {
+                    if (MyService.wifi.disconnect()) {
+                        Logger.addRecordToLog("DB Disconnected as Level = " + level);
+                        Log.v(MyService.TAG1, "DB Disconnected as Level = " + level);
+                    }
                 }
             }
             else {

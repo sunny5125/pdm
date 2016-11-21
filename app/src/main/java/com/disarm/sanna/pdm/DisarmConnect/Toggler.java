@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
  */
 public class Toggler extends Activity{
     // Randomly value less than 0.50 will make HotspotActive else WifiActive
-    private static double toggleBetweenHotspotWifi = 0.90;
+    private static double toggleBetweenHotspotWifi = 0.5;
 
     public static  int addIncreasewifi = 5000,wifiIncrease= 5000,hpIncrease=5000,addIncreasehp = 5000;
 
@@ -35,7 +35,7 @@ public class Toggler extends Activity{
     public static ArrayList<Integer> allFrequency = new ArrayList<>();
 
     // Set hotspot creation minimum battery level
-    private static double minimumBatteryLevel = 10;
+    private static double minimumBatteryLevel = 5;
 
     public static int convertFrequencyToChannel(int freq) {
         if (freq >= 2412 && freq <= 2484) {
@@ -57,28 +57,35 @@ public class Toggler extends Activity{
         }
         Log.v("All frequency:",allFrequency.toString());
 
-        int channelArray[] = new int[15];
+        double channelArray[] = new double[13];
 
         // Fill all the elements with 0
         Arrays.fill(channelArray,0);
 
-        // Increment the value of array elements for each channel
-        for (int s:allFrequency)
-        {
-            channelArray[s]++;
-        }
+        double factor = 0.20;
 
+        for (int band:allFrequency)
+        {
+            for (int i=band-5 ;i<= band+6 ;i++)
+            {
+                if (i<1 || i>13)
+                    continue;
+                channelArray[i-1] = (channelArray[i-1] + (6-Math.abs(i-band))*factor);
+            }
+        }
+        Log.v("Channel Array:",Arrays.toString(channelArray));
+
+        // Minimum value of channel array
+        int bestFoundChannel;
         // Find minimum value from the channel array
-        int small = channelArray[0];
+        double small = channelArray[0];
         int index = 0;
-        for (int i = 1; i < channelArray.length; i++) {
+        for (int i = 0; i < channelArray.length; i++) {
             if (channelArray[i] < small) {
                 small = channelArray[i];
                 index = i;
             }
         }
-        Log.v("Channel Array:",Arrays.toString(channelArray));
-        Log.v("Minimum Channel Value:", String.valueOf(small));
 
         // Find in channel array the elements with minimum channel value
         ArrayList bestFoundAvailableChannels = new ArrayList();
@@ -89,14 +96,14 @@ public class Toggler extends Activity{
                 bestFoundAvailableChannels.add(items);
             }
         }
-
-        Log.v("Best Found Available Channels : ",Arrays.deepToString(bestFoundAvailableChannels.toArray()));
-
+        //Log.v("Minimum Channel Value,Best Found Channel:", String.valueOf(small) + "," + String.valueOf(bestFoundChannel));
         // Find a random available channel from best found available channels
         Random rand = new Random();
-        Integer randGeneratedBestFoundChannel = (Integer) bestFoundAvailableChannels.get(rand.nextInt(bestFoundAvailableChannels.size()));
-        Log.v("Generated Random Available Channel:" ,randGeneratedBestFoundChannel.toString() );
-        return randGeneratedBestFoundChannel;
+        Integer randGeneratedBestFoundChannel = (Integer) bestFoundAvailableChannels.get(rand.nextInt(bestFoundAvailableChannels.size())) + 1;
+        Log.v("Generated Random Available Channel:" ,randGeneratedBestFoundChannel.toString());
+        return (randGeneratedBestFoundChannel + 1);
+
+
     }
     public static void toggle(Context c){
         Log.v(MyService.TAG3, "Toggling randomly!!!");

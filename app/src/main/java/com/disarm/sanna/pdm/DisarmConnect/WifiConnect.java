@@ -38,7 +38,9 @@ public class WifiConnect implements Runnable {
 
     @Override
     public void run() {
+        MyService.wifi.startScan();
         List<ScanResult> allScanResults = MyService.wifi.getScanResults();
+        Log.v("WifiConnect allScanResults:",allScanResults.toString());
         Log.v(MyService.TAG2,"Running Autoconnector");
         wifiInfo = MyService.wifi.getConnectionInfo();
         String ssidName = wifiInfo.getSSID();
@@ -67,8 +69,9 @@ public class WifiConnect implements Runnable {
             {}
         }
 
-        else if(!ssidName.equals("<unknown ssid>")){
-            Log.v(MyService.TAG2,"Checking For Disarm Hotspot");
+        else
+        {
+            /*Log.v(MyService.TAG2,"Checking For Disarm Hotspot");
             // Connecting to DisarmHotspot WIfi on Button Click
 
             if (allScanResults.toString().contains("DisarmHotspotDB")) {
@@ -93,7 +96,8 @@ public class WifiConnect implements Runnable {
                     isDBConnected = 1;
                 }
             }
-            else if (allScanResults.toString().contains("DH-")) {
+            else*/
+            if (allScanResults.toString().contains("DH-")) {
                 // Store all DH available in allDHAvailable
                 Map allDHAvailable = new HashMap<String, Integer>();
 
@@ -132,8 +136,9 @@ public class WifiConnect implements Runnable {
                 //wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
                 int res = MyService.wifi.addNetwork(wc);
                 boolean b = MyService.wifi.enableNetwork(res, true);
+                Log.v("WifiConnect:","Res:" + res + ",b:" + b);
                 Log.v(MyService.TAG2, "Connected");
-
+                Log.v("Parameters:" ,wc.SSID + "," + wc.BSSID + "," + wc.allowedAuthAlgorithms + "," + wc.allowedProtocols + "," + wc.allowedKeyManagement + "," + wc.allowedGroupCiphers + "," + wc.allowedPairwiseCiphers + "," + wc.FQDN + "," + wc.status);
                 Logger.addRecordToLog("DH Connected Successfully," + bestFoundSSID);
             }
             else{
@@ -144,7 +149,7 @@ public class WifiConnect implements Runnable {
             }
 
         }
-        handler.postDelayed(this,10000);
+        handler.postDelayed(this,3000);
     }
     public int findDBSignalLevel(List<ScanResult> allScanResults)
     {

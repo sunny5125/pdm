@@ -6,7 +6,9 @@ package com.disarm.sanna.pdm.DisarmConnect;
 
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.disarm.sanna.pdm.MainActivity;
@@ -42,9 +44,15 @@ public class ApManager {
             try {
                 Method getConfigMethod = wifimanager.getClass().getMethod("getWifiApConfiguration");
                 WifiConfiguration wifiConfig = (WifiConfiguration) getConfigMethod.invoke(wifimanager);
+                if (Build.VERSION.SDK_INT > 22) {
+                    // Created hotspot in the best available channel
+                    wifiConfig.getClass().getField("apChannel").setInt(wifiConfig, MyService.bestAvailableChannel);
+                }
+                else
+                {
+                    wifiConfig.getClass().getField("channel").setInt(wifiConfig, MyService.bestAvailableChannel);
+                }
 
-                // Created hotspot in the best available channel
-                wifiConfig.getClass().getField("channel").setInt(wifiConfig,MyService.bestAvailableChannel);
                 wifiConfig.allowedAuthAlgorithms.clear();
                 wifiConfig.allowedGroupCiphers.clear();
                 wifiConfig.allowedKeyManagement.clear();
@@ -52,13 +60,13 @@ public class ApManager {
                 wifiConfig.allowedProtocols.clear();
                 wifiConfig.SSID = "DH-" + MyService.phoneVal;
 
+
                 wifiConfig.preSharedKey = "password123";
 
                 wifiConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
                 wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
                 wifiConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
                 wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-
 
                 Method setWifiApMethod = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
                 boolean apstatus=(Boolean) setWifiApMethod.invoke(wifimanager, wifiConfig,true);
