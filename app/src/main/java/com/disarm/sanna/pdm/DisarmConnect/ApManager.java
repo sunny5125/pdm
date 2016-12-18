@@ -43,13 +43,17 @@ public class ApManager {
             //Change Name of the Created Hotspot
             try {
                 Method getConfigMethod = wifimanager.getClass().getMethod("getWifiApConfiguration");
+
                 WifiConfiguration wifiConfig = (WifiConfiguration) getConfigMethod.invoke(wifimanager);
+                //wifiConfig.getClass().getField("apChannel").setInt(wifiConfig, 6);
+                Log.v("ApManager", "Best Available Channel:" + MyService.bestAvailableChannel);
+
+                // Channel Allocation
+
                 if (Build.VERSION.SDK_INT > 22) {
                     // Created hotspot in the best available channel
                     wifiConfig.getClass().getField("apChannel").setInt(wifiConfig, MyService.bestAvailableChannel);
-                }
-                else
-                {
+                } else {
                     wifiConfig.getClass().getField("channel").setInt(wifiConfig, MyService.bestAvailableChannel);
                 }
 
@@ -69,7 +73,9 @@ public class ApManager {
                 wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 
                 Method setWifiApMethod = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-                boolean apstatus=(Boolean) setWifiApMethod.invoke(wifimanager, wifiConfig,true);
+                boolean apstatus = (Boolean) setWifiApMethod.invoke(wifimanager, wifiConfig, true);
+                //Log.v("GetAPCOnfig:" + getConfigMethod.toString() + ",setWifiApMethod : " + setWifiApMethod.toString());
+                Log.v("WifiConfig: " + wifiConfig);
             }
             catch (Exception e) {
                 e.printStackTrace();

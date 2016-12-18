@@ -23,6 +23,7 @@ public class SyncService extends Service {
 
     private static final String BROADCAST_IP = "192.168.43.255";
     private static final int PORT = 4446;
+    // Disarm Changed 5 to 3
     private static final int syncInterval = 5;
     private static final int maxRunningDownloads = 5;
 
@@ -70,7 +71,7 @@ public class SyncService extends Service {
         discoverer = new Discoverer(BROADCAST_IP,source, PORT,logger);
         fileManager = new FileManager(source,databaseName, databaseDirectory,syncDirectory,mapDirectory,logger);
         fileTransporter = new FileTransporter(syncDirectory,logger);
-        controller = new Controller(discoverer, fileManager, fileTransporter, syncInterval, maxRunningDownloads,logger);
+        controller = new Controller(discoverer, fileManager, fileTransporter, syncInterval, maxRunningDownloads,logger, false);
         webServer = new WebServer(8080, controller,logger);
     }
 

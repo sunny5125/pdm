@@ -77,6 +77,7 @@ public class Toggler extends Activity{
 
         // Minimum value of channel array
         int bestFoundChannel;
+
         // Find minimum value from the channel array
         double small = channelArray[0];
         int index = 0;
@@ -88,7 +89,7 @@ public class Toggler extends Activity{
         }
 
         // Find in channel array the elements with minimum channel value
-        ArrayList bestFoundAvailableChannels = new ArrayList();
+        ArrayList<Integer> bestFoundAvailableChannels = new ArrayList();
         for(int items = 0;items < channelArray.length;items++)
         {
             if(channelArray[items] == small)
@@ -96,13 +97,18 @@ public class Toggler extends Activity{
                 bestFoundAvailableChannels.add(items);
             }
         }
+        if(channelArray[6] < channelArray[0] && channelArray[6] <channelArray[11] )
+            return  6;
+        if(channelArray[11] < channelArray[0] && channelArray[11] < channelArray[6])
+            return 11;
         //Log.v("Minimum Channel Value,Best Found Channel:", String.valueOf(small) + "," + String.valueOf(bestFoundChannel));
         // Find a random available channel from best found available channels
-        Random rand = new Random();
+      /*  Random rand = new Random();
         Integer randGeneratedBestFoundChannel = (Integer) bestFoundAvailableChannels.get(rand.nextInt(bestFoundAvailableChannels.size())) + 1;
         Log.v("Generated Random Available Channel:" ,randGeneratedBestFoundChannel.toString());
-        return (randGeneratedBestFoundChannel + 1);
+        *///return (randGeneratedBestFoundChannel + 1);
 
+        return 1;
 
     }
     public static void toggle(Context c){

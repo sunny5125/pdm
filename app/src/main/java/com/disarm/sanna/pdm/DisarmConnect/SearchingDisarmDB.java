@@ -19,7 +19,7 @@ public class SearchingDisarmDB implements Runnable {
     private android.os.Handler handler;
     private Context context;
     private int timerDBSearch = 3000;
-    public int minDBLevel = 3;
+    public int minDBLevel = 2;
 
     public String connectedSSID = MyService.wifi.getConnectionInfo().getSSID().toString().replace("\"","");
     public String lastConnectedSSID = connectedSSID;
@@ -84,7 +84,7 @@ public class SearchingDisarmDB implements Runnable {
                 wc.preSharedKey = "\""+ MyService.dbPass +"\"";
                 wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 
-                //  wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+              //    wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 
                 int res = MyService.wifi.addNetwork(wc);
                 boolean b = MyService.wifi.enableNetwork(res, true);
