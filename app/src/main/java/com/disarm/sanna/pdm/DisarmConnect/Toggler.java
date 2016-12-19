@@ -35,7 +35,7 @@ public class Toggler extends Activity{
     public static ArrayList<Integer> allFrequency = new ArrayList<>();
 
     // Set hotspot creation minimum battery level
-    private static double minimumBatteryLevel = 5;
+    private static double minimumBatteryLevel = 10;
 
     public static int convertFrequencyToChannel(int freq) {
         if (freq >= 2412 && freq <= 2484) {

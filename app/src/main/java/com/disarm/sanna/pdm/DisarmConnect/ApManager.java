@@ -75,7 +75,7 @@ public class ApManager {
                 Method setWifiApMethod = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
                 boolean apstatus = (Boolean) setWifiApMethod.invoke(wifimanager, wifiConfig, true);
                 //Log.v("GetAPCOnfig:" + getConfigMethod.toString() + ",setWifiApMethod : " + setWifiApMethod.toString());
-                Log.v("WifiConfig: " + wifiConfig);
+                Log.v("WifiConfig: " , wifiConfig.toString());
             }
             catch (Exception e) {
                 e.printStackTrace();
