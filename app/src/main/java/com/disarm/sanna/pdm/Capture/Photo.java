@@ -13,6 +13,9 @@ import android.provider.MediaStore;
 import android.support.v4.BuildConfig;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.disarm.sanna.pdm.MainActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,8 +23,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
+import static Sensors.readWriteMetaData.getImageAttributes;
+import static Sensors.readWriteMetaData.saveExif;
 import static com.disarm.sanna.pdm.R.id.imageView;
 
 
@@ -37,6 +43,7 @@ public class Photo extends Activity {
     private Uri outputFileUri;
     String mCurrentPhotoPath;
     private static final int SELECT_PICTURE_CAMARA = 101, SELECT_PICTURE = 201, CROP_IMAGE = 301;
+    private File mediaFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,53 +52,9 @@ public class Photo extends Activity {
         type = myIntent.getStringExtra("IntentType");
         TakeImage();
         Photo.this.finish();
+
     }
 
-   /* public void captureImage(){
-        createImages = new File(path);
-        if (!createImages.exists())
-            createImages.mkdir();
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-       // Uri photoURI = FileProvider.getUriForFile(getApplicationContext(),getApplicationContext().getPackageName() + ".provider",getOutputMediaFile());
-        Uri photoURI = FileProvider.getUriForFile(Photo.this,
-                BuildConfig.APPLICATION_ID + ".provider",
-                getOutputMediaFile());
-        //fileUri = getOutputMediaFileUri();// create a file to save the image
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI); // set the image file name
-        // start the image capture Intent
-        startActivityForResult(intent,SELECT_PICTURE_CAMARA);
-
-    }*/
-
-  /*  @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.v("camera","checksc");
-        if (requestCode == SELECT_PICTURE_CAMARA && resultCode == Activity.RESULT_OK) {
-            Log.v("camera","check");
-            cropImage(Uri.parse(mCurrentPhotoPath));
-
-        }else if (requestCode == CROP_IMAGE) {
-            if (data != null) {
-                // get the returned data
-                Bundle extras = data.getExtras();
-                // get the cropped bitmap
-                Bitmap selectedBitmap = extras.getParcelable("data");
-
-                imageView.setImageBitmap(selectedBitmap);
-            }
-
-            Uri imageUri = Uri.parse(mCurrentPhotoPath);
-            File file = new File(imageUri.getPath());
-            try {
-                InputStream ims = new FileInputStream(file);
-                //imageView.setImageBitmap(BitmapFactory.decodeStream(ims));
-            } catch (FileNotFoundException e) {
-                return;
-            }
-
-        }
-    }*/
 
     void TakeImage() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -114,6 +77,10 @@ public class Photo extends Activity {
 
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, SELECT_PICTURE_CAMARA);
+
+
+               // File imgFile = new File(Environment.getExternalStorageDirectory() + "/DMS/Working/IMG_50_Health_9635547701_defaultMcs_10000.0000_10000.0000_20161220031532_0.jpg");
+
             }
         }
     }
@@ -124,10 +91,10 @@ public class Photo extends Activity {
 
     private File getOutputMediaFile() throws IOException{
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        File mediaFile;
+
         group = type;
         groupID = "1";
-        mediaFile = new File(path, "IMG_" + group + "_" + timeStamp + "_" + ".jpg");
+        mediaFile = new File(path, "IMG_" + MainActivity.phoneVal + "_" + group + "_" + timeStamp + "_" + ".jpg");
         return mediaFile;
     }
 

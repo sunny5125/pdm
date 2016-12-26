@@ -4,9 +4,12 @@ package com.disarm.sanna.pdm.BackgroundProcess;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import static Sensors.readWriteMetaData.getImageAttributes;
+import static Sensors.readWriteMetaData.saveExif;
 
 import com.disarm.sanna.pdm.ActivityList;
 import com.disarm.sanna.pdm.ShareActivity;
@@ -14,6 +17,9 @@ import com.disarm.sanna.pdm.ShareActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+
+import static Sensors.readWriteMetaData.getImageAttributes;
+import static Sensors.readWriteMetaData.saveExif;
 
 
 /**
@@ -68,7 +74,7 @@ public class FileTask extends AsyncTask  {
                 }
             });
 
-            Log.v("Found Files starting with MapDisarm_Log:", foundFiles.length + "");
+          //  Log.v("Found Files starting with MapDisarm_Log:", foundFiles.length + "");
 
             if (foundFiles != null && foundFiles.length > 0) {
                 logFile = new File(foundFiles[0].toString());
@@ -95,11 +101,14 @@ public class FileTask extends AsyncTask  {
         }
         for (int i=0; i < file.length; i++)
         {
+            changeMetaData(file[i]);
             fileName = file[i].getName().split("_");
             fileType = fileName[0];
-            groupType = fileName[1];
-            timestamp = fileName[2];
-            fileFormat = fileName[3];
+            source = fileName[1];
+            groupType = fileName[2];
+            timestamp = fileName[3];
+            fileFormat = fileName[4];
+
             groupID = idNumber;
             Log.v("FIleNames",fileType+ttl+groupType+source+dest+latlng+timestamp+groupID);
             File from = new File(pathFrom,file[i].getName());
@@ -118,7 +127,25 @@ public class FileTask extends AsyncTask  {
         }
         return null;
     }
+    void changeMetaData(File file)
+    {
 
+        Bundle extraVals = new Bundle();
+
+        extraVals.putString("Accelometer","22.23");
+        extraVals.putString("Gyroscope","100.01");
+        Log.v("Sensor 1 ","working");
+        try {
+            // Write to file
+            saveExif(file.toString(), extraVals);
+            Bundle vals = getImageAttributes(file.toString());
+            Log.v("Sensors 2: ", vals.toString());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);

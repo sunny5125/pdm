@@ -13,12 +13,15 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -43,9 +46,16 @@ import com.disarm.sanna.pdm.Util.DividerItemDecoration;
 import com.disarm.sanna.pdm.Util.Reset;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Set;
+
+import static Sensors.readWriteMetaData.getImageAttributes;
+import static Sensors.readWriteMetaData.saveExif;
 
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
@@ -232,13 +242,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.emulation:
                 if(b)
                 {
-                    emulator.startEmulator();
-                    Log.v(TAG_Emulation,"Emulation Started");
+                   // emulator.startEmulator();
+                    try {
+
+
+                    }
+                    catch (Exception e)
+                    {}
 
                 }
                 else
                 {
-                    emulator.stopEmulator();
+                   // emulator.stopEmulator();
                     Log.v(TAG_Emulation,"Emulation Stopped");
                 }
                 break;
