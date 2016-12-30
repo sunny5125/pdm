@@ -81,32 +81,39 @@ public class readWriteMetaData {
         result = (float) (FloatD + (FloatM / 60) + (FloatS / 3600));
         return result;
     }
-    public static void saveExif(String fileNameWithPath, Bundle extraInfo) throws IOException {
+    public static void saveExif(String fileNameWithPath, Bundle extraInfo) {
         if (extraInfo != null) {
-            ExifInterface exif = new ExifInterface(fileNameWithPath);
-            for (String key : extraInfo.keySet()) {
-                Object obj = extraInfo.get(key);
-                if (obj instanceof Location) {
-                    Location location = (Location) obj;
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, convertToDegreeMinuteSeconds(location.getLatitude()));
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, getLatitudeRef(location.getLatitude()));
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, convertToDegreeMinuteSeconds(location.getLongitude()));
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, getLongitudeRef(location.getLongitude()));
-                    break;
+            try {
+                ExifInterface exif = new ExifInterface(fileNameWithPath);
+                Log.v("FileNameWithPath:", fileNameWithPath);
+                for (String key : extraInfo.keySet()) {
+                    Object obj = extraInfo.get(key);
+                    if (obj instanceof Location) {
+                        Location location = (Location) obj;
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, convertToDegreeMinuteSeconds(location.getLatitude()));
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, getLatitudeRef(location.getLatitude()));
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, convertToDegreeMinuteSeconds(location.getLongitude()));
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, getLongitudeRef(location.getLongitude()));
+                        break;
+                    }
                 }
-            }
-            JSONObject json = new JSONObject();
-            Set<String> keys = extraInfo.keySet();
-            for (String key : keys) {
-                try {
-                    json.put(key, extraInfo.get(key));
-                } catch (JSONException e) {
-                    //Handle exception here
+                JSONObject json = new JSONObject();
+                Set<String> keys = extraInfo.keySet();
+                for (String key : keys) {
+                    try {
+                        json.put(key, extraInfo.get(key));
+                    } catch (JSONException e) {
+                        //Handle exception here
+                    }
                 }
+                Log.v("UserComment", json.toString());
+                exif.setAttribute("UserComment", json.toString());
+                exif.saveAttributes();
             }
-            Log.v("UserComment",json.toString());
-            exif.setAttribute("UserComment", json.toString());
-            exif.saveAttributes();
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
     /**

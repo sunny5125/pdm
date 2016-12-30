@@ -101,7 +101,7 @@ public class FileTask extends AsyncTask  {
         }
         for (int i=0; i < file.length; i++)
         {
-            changeMetaData(file[i]);
+
             fileName = file[i].getName().split("_");
             fileType = fileName[0];
             source = fileName[1];
@@ -127,25 +127,7 @@ public class FileTask extends AsyncTask  {
         }
         return null;
     }
-    void changeMetaData(File file)
-    {
 
-        Bundle extraVals = new Bundle();
-
-        extraVals.putString("Accelometer","22.23");
-        extraVals.putString("Gyroscope","100.01");
-        Log.v("Sensor 1 ","working");
-        try {
-            // Write to file
-            saveExif(file.toString(), extraVals);
-            Bundle vals = getImageAttributes(file.toString());
-            Log.v("Sensors 2: ", vals.toString());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
