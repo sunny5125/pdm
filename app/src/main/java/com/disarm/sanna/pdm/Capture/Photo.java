@@ -48,7 +48,7 @@ public class Photo extends Activity implements SensorEventListener {
     private static final int SELECT_PICTURE_CAMARA = 101, SELECT_PICTURE = 201, CROP_IMAGE = 301;
     private File mediaFile;
     private SensorManager sensorManager;
-    private double accelerometerX,accelerometerY,accelerometerZ,magneticX,magneticY,magneticZ,gyroscopeX,gyroscopeY,gyroscopeZ;
+    private double accelerometerX,accelerometerY,accelerometerZ,magneticX,magneticY,magneticZ,gyroscopeX,gyroscopeY,gyroscopeZ, temperature, lightVal, pressureVal, proxVal,relHumidVal;
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Do something here if sensor accuracy changes.
@@ -91,7 +91,21 @@ public class Photo extends Activity implements SensorEventListener {
             magneticY = sensorEvent.values[1];
             magneticZ = sensorEvent.values[2];
         }
-
+        else if ( sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            temperature = sensorEvent.values[0];
+        }
+        else if ( sensor.getType() == Sensor.TYPE_LIGHT) {
+            lightVal = sensorEvent.values[0];
+        }
+        else if ( sensor.getType() == Sensor.TYPE_PRESSURE) {
+            pressureVal = sensorEvent.values[0];
+        }
+        else if ( sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            proxVal = sensorEvent.values[0];
+        }
+        else if ( sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY) {
+            relHumidVal = sensorEvent.values[0];
+        }
 
     }
 
@@ -109,6 +123,21 @@ public class Photo extends Activity implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY),
                 SensorManager.SENSOR_DELAY_NORMAL);
 
         //  List<Sensor> sensors = mgr.getSensorList(Sensor.TYPE_ALL);
@@ -161,6 +190,11 @@ public class Photo extends Activity implements SensorEventListener {
         extraVals.putString("Accelerometer",  String.valueOf(accelerometerX) + "," + String.valueOf(accelerometerY) +"," +String.valueOf(accelerometerZ));
         extraVals.putString("Gyroscope",  String.valueOf(gyroscopeX) + "," + String.valueOf(gyroscopeY) +"," +String.valueOf(gyroscopeZ));
         extraVals.putString("Compass",  String.valueOf(magneticX) + "," + String.valueOf(magneticY) +"," +String.valueOf(magneticZ));
+        extraVals.putString("Temperature",  String.valueOf(temperature));
+        extraVals.putString("Light",  String.valueOf(lightVal));
+        extraVals.putString("Pressure",  String.valueOf(pressureVal));
+        extraVals.putString("Proximity",  String.valueOf(proxVal));
+        extraVals.putString("Humidity",  String.valueOf(relHumidVal));
 
         try {
             Log.v("FilePath:", file.toString());
