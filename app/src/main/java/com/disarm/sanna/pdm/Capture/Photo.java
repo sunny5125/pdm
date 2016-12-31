@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import Sensors.getSensorsData;
 
@@ -47,7 +48,7 @@ public class Photo extends Activity implements SensorEventListener {
     private static final int SELECT_PICTURE_CAMARA = 101, SELECT_PICTURE = 201, CROP_IMAGE = 301;
     private File mediaFile;
     private SensorManager sensorManager;
-    private double accelerometerX,accelerometerY,accelerometerZ;
+    private double accelerometerX,accelerometerY,accelerometerZ,magneticX,magneticY,magneticZ,gyroscopeX,gyroscopeY,gyroscopeZ;
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Do something here if sensor accuracy changes.
@@ -71,29 +72,51 @@ public class Photo extends Activity implements SensorEventListener {
 
 
     public void onSensorChanged(SensorEvent sensorEvent) {
-        String sensorName = sensorEvent.sensor.getName();
-        Log.v(sensorName, ": X: " + sensorEvent.values[0] + "; Y: " + sensorEvent.values[1] + "; Z: " + sensorEvent.values[2] + ";");
-        accelerometerX = sensorEvent.values[0];
-        accelerometerY = sensorEvent.values[1];
-        accelerometerZ = sensorEvent.values[2];
+        Sensor sensor = sensorEvent.sensor;
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            Log.v(sensor.getName(), ": X: " + sensorEvent.values[0] + "; Y: " + sensorEvent.values[1] + "; Z: " + sensorEvent.values[2] + ";");
+            accelerometerX = sensorEvent.values[0];
+            accelerometerY = sensorEvent.values[1];
+            accelerometerZ = sensorEvent.values[2];
+        }
+        else if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            Log.v(sensor.getName(), ": X: " + sensorEvent.values[0] + "; Y: " + sensorEvent.values[1] + "; Z: " + sensorEvent.values[2] + ";");
+            gyroscopeX = sensorEvent.values[0];
+            gyroscopeY = sensorEvent.values[1];
+            gyroscopeZ = sensorEvent.values[2];
+        }
+        else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            Log.v(sensor.getName(), ": X: " + sensorEvent.values[0] + "; Y: " + sensorEvent.values[1] + "; Z: " + sensorEvent.values[2] + ";");
+            magneticX = sensorEvent.values[0];
+            magneticY = sensorEvent.values[1];
+            magneticZ = sensorEvent.values[2];
+        }
+
 
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Register listener for all available sensor
         sensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_NORMAL);
+
+        //  List<Sensor> sensors = mgr.getSensorList(Sensor.TYPE_ALL);
+       // Log.v("Sensors:", "Sensors list :" + Arrays.deepToString(sensors.toArray()));
+
         Intent myIntent = getIntent();
         type = myIntent.getStringExtra("IntentType");
         TakeImage();
-
-        // REmove this else onActivityResult not working
-        // Photo.this.finish();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
 
     @Override
@@ -135,9 +158,9 @@ public class Photo extends Activity implements SensorEventListener {
 
         Bundle extraVals = new Bundle();
 
-        extraVals.putString("Gyroscope", "22.23");
-        Log.v("Acceloremeter: ", "Locked Acceloremeter" + String.valueOf(accelerometerX) + "," + String.valueOf(accelerometerY) +"," +String.valueOf(accelerometerZ));
         extraVals.putString("Accelerometer",  String.valueOf(accelerometerX) + "," + String.valueOf(accelerometerY) +"," +String.valueOf(accelerometerZ));
+        extraVals.putString("Gyroscope",  String.valueOf(gyroscopeX) + "," + String.valueOf(gyroscopeY) +"," +String.valueOf(gyroscopeZ));
+        extraVals.putString("Compass",  String.valueOf(magneticX) + "," + String.valueOf(magneticY) +"," +String.valueOf(magneticZ));
 
         try {
             Log.v("FilePath:", file.toString());

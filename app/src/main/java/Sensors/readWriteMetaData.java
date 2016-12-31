@@ -25,7 +25,7 @@ public class readWriteMetaData {
             ExifInterface exifInterface = new ExifInterface(fileNameWithPath);
             latitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
             accVal = exifInterface.getAttribute(ExifInterface.TAG_USER_COMMENT);
-            Log.v("Accval",accVal);
+            Log.v("User Added Data:",accVal);
 
             exifBundle.putString(ExifInterface.TAG_IMAGE_LENGTH, exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
             exifBundle.putString(ExifInterface.TAG_IMAGE_WIDTH, exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
