@@ -88,7 +88,7 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
         mAdapter = new MyAdapterActivityList(prgmNameList,prgmImages);
         mRecyclerView.setAdapter(mAdapter);
         //prepareSituationData();
-        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView, new MainActivity.ClickListener() {
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mRecyclerView, new SurakshitActivity.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 onclick(position);

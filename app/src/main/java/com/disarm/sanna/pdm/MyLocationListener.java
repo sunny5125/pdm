@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.InputStreamReader;
 
-public class MyLocationListener extends MainActivity implements LocationListener {
+public class MyLocationListener extends SurakshitActivity implements LocationListener {
     Logger logger;
     String sCurrentLine;
     BufferedReader br;

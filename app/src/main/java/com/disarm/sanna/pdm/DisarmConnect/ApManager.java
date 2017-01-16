@@ -7,9 +7,6 @@ package com.disarm.sanna.pdm.DisarmConnect;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.util.Log;
-
-import com.disarm.sanna.pdm.MainActivity;
 
 import java.lang.reflect.Method;
 

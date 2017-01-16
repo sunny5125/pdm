@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -27,7 +26,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,10 +43,9 @@ import com.disarm.sanna.pdm.Util.Reset;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class SurakshitActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_surakshit);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -243,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     int id) {
                                     File dir = new File(Environment.getExternalStorageDirectory() + "/DMS/Working");
                                     if (Reset.deleteContents(dir)) {
-                                        Toast.makeText(MainActivity.this, R.string.reset_done, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SurakshitActivity.this, R.string.reset_done, Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
@@ -265,15 +262,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                                     int id) {
-                                    ProgressDialog pd = new ProgressDialog(MainActivity.this);
+                                    ProgressDialog pd = new ProgressDialog(SurakshitActivity.this);
                                     pd.show();
                                     pd.setMessage("Reset is on its way !");
                                     File dir = new File(Environment.getExternalStorageDirectory() + "/DMS");
                                     if (Reset.deleteContents(dir)) {
                                         pd.setMessage("Reset Done");
-                                        Toast.makeText(MainActivity.this, R.string.reset_done, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SurakshitActivity.this, R.string.reset_done, Toast.LENGTH_SHORT).show();
                                     }
-                                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SurakshitActivity.this);
                                     SharedPreferences.Editor editor = prefs.edit();
                                     editor.clear();
                                     editor.commit();

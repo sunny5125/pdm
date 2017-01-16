@@ -1,35 +1,22 @@
 package com.disarm.sanna.pdm.DisarmConnect;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.disarm.sanna.pdm.MainActivity;
+import com.disarm.sanna.pdm.SurakshitActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -104,7 +91,7 @@ public class MyService extends Service {
         registerReceiver(bl, batfilter);
 
         // Read Source to generate DH
-        File file = new File(MainActivity.TARGET_DMS_PATH,"source.txt");
+        File file = new File(SurakshitActivity.TARGET_DMS_PATH,"source.txt");
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(file);

@@ -1,1 +1,4 @@
-include ':app', ':rest'
+include ':app', ':gisapp', ':maplib', ':maplibui'
+project(':gisapp').projectDir = new File('android_gisapp/gisapp')
+project(':maplib').projectDir = new File('android_gisapp/maplib')
+project(':maplibui').projectDir = new File('android_gisapp/maplibui')

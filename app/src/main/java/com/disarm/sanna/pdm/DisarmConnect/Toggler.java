@@ -1,13 +1,8 @@
 package com.disarm.sanna.pdm.DisarmConnect;
 
 import android.app.Activity;
-import android.app.IntentService;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-
-import com.disarm.sanna.pdm.MainActivity;
-import com.disarm.sanna.pdm.R;
 
 /**
  * Created by hridoy on 19/8/16.
@@ -46,11 +41,11 @@ public class Toggler extends Activity{
             MyService.presentState = "hotspot";
 
             // Set ImageView to Hotspot
-            //MainActivity.img_wifi_state.setImageResource(R.drawable.hotspot);
+            //SurakshitActivity.img_wifi_state.setImageResource(R.drawable.hotspot);
 
             // Set text to textConnect TextView
             String apHotspotName = "DH" + MyService.phoneVal;
-//            MainActivity.textConnect.setText(apHotspotName);
+//            SurakshitActivity.textConnect.setText(apHotspotName);
 
             // Hotspot Mode Activated
             Log.v(MyService.TAG1,"hptoggling for " +String.valueOf(addIncreasehp));
@@ -73,10 +68,10 @@ public class Toggler extends Activity{
             MyService.presentState = "wifi";
 
             // Set ImageView to Wifi
-            //MainActivity.img_wifi_state.setImageResource(R.drawable.wifi);
+            //SurakshitActivity.img_wifi_state.setImageResource(R.drawable.wifi);
 
             // Set text to textConnect TextView
-            //MainActivity.textConnect.setText("");
+            //SurakshitActivity.textConnect.setText("");
 
             // Wifi Mode Activated
             Log.v(MyService.TAG3,"wifitogging for "+ String.valueOf(addIncreasewifi));

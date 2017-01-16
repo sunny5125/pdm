@@ -2,45 +2,32 @@ package com.disarm.sanna.pdm;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
-
-import com.disarm.sanna.pdm.Util.Reset;
-
-import java.io.File;
 
 /**
  * Created by arka on 14/9/16.
  * Activity to choose between offline social sharing and disaster management category
  */
 public class SelectCategoryActivity extends AppCompatActivity implements ImageButton.OnClickListener {
-    Button categorySocialShare;
-    Button categoryDisasterManagement;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_select_category);
 
-        //categorySocialShare = (Button)findViewById(R.id.b_category_social_share);
-        //categoryDisasterManagement = (Button)findViewById(R.id.b_category_disaster_management);
         ImageButton categorySocialShare = (ImageButton)findViewById(R.id.b_category_social_share);
         ImageButton categoryDisasterManagement = (ImageButton)findViewById(R.id.b_category_disaster_management);
+        ImageButton categoryGIS = (ImageButton)findViewById(R.id.b_category_gis);
 
         categorySocialShare.setOnClickListener(this);
         categoryDisasterManagement.setOnClickListener(this);
+        categoryGIS.setOnClickListener(this);
     }
 
     @Override
@@ -54,9 +41,17 @@ public class SelectCategoryActivity extends AppCompatActivity implements ImageBu
                 break;
             case R.id.b_category_disaster_management:
                 // Launch Disaster Management Activity
-                Intent intentDisasterManagement = new Intent(this, MainActivity.class);
+                Intent intentDisasterManagement = new Intent(this, SurakshitActivity.class);
                 startActivity(intentDisasterManagement);
                 break;
+            case R.id.b_category_gis:
+                Intent intentGIS = null;
+                try {
+                    intentGIS = new Intent(this, Class.forName("com.nextgis.mobile.activity.MainActivity"));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                startActivity(intentGIS);
         }
     }
 

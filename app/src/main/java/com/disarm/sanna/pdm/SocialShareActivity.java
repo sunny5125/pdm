@@ -30,7 +30,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -49,7 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-import static com.disarm.sanna.pdm.MainActivity.root;
+import static com.disarm.sanna.pdm.SurakshitActivity.root;
 
 /**
  * Created by arka on 14/9/16.
@@ -253,7 +252,7 @@ public class SocialShareActivity extends AppCompatActivity implements View.OnCli
         chatList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         chatList.setAdapter(chatlistAdapter);
         chatList.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
-                chatList, new MainActivity.ClickListener() {
+                chatList, new SurakshitActivity.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 launchShareActivity(position);
