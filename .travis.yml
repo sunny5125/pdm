@@ -9,6 +9,7 @@ android:
   - android-25
 before_install:
 - chmod +x gradlew
+- bash .travis-android-license-bugfix.sh
 script:
 - "./gradlew clean build connectedAndroidTest -PdisablePreDex --stacktrace"
 notifications:
