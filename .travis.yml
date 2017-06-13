@@ -1,0 +1,27 @@
+sudo: false
+language: android
+jdk: oraclejdk8
+android:
+  components:
+  - platform-tools
+  - tools
+  - build-tools-25.0.2
+  - android-25
+before_install:
+- chmod +x gradlew
+script:
+- "./gradlew clean build connectedAndroidTest -PdisablePreDex --stacktrace"
+notifications:
+  email: true
+deploy:
+  provider: releases
+  api_key:
+    secure: dvmugq/0Pt8qKEUcvZEN6C/sodDb/kTbn37HFUD4p+LiApVZ7z5qMj/fvZSul4IfJug5sIs1MpKJ9JmOefs1W3dbfFgqZUjUv2r0R5A7nUGtxVs3H+g3Tt92Onj1vIgRvhhE9lk+6SzyNqHIDQ6jBaDvpAwYfsw76zO+gb8z4fJ9B8DB3yGuw8w4zoKv2Wlhfcss1Uxmw2Z0hjIPeSSjnlyThQrNPYD8hcZherPCPlSH08Dl3VFVQhiStNpzFel7AjhRRO5VW7B3QjHugGQN0x+XfpYF/mK9scgDi/IVsvfcLJbudLy/nEGFJFSPIM1w7wAwnbmj5IDXIyz/lMZ0IxIaT72LQFi2XPb5jV861zL9V8gbcCRjk3O0EQinmHnNQaCPr0Jcf9guWW1znuHbAQECzmmPkGEfNr9Yc0GX7kwkR3kC3MsOSQl/83dKKVyPgfBphyms5JvE1pATIo5Pdb9ayqeQcOnc9z0aTiG0z5stNeWpeNZzcleUVM2eQQn1/eK0g9HqIlEU2Iro8AQ2dcsSbsGFndheoVWnZXnsaEF6ILnVYUnw0vwHP67Oys+3BgdHfimEe/9qF8HQvAipBpiEIh5kQM1T20UL/G6mJykNEiiGvkAGBVqEE2d1ba9g4Ip54Bu/j7WL4A0IOLCjjhhNzSyWGr7dISbbV/fzGEg=
+  file: "/home/hridoy/disarm/pdm-travisci/pdm/app/build/outputs/apk/Surakshit*release*.apk"
+  file_glob: "true"
+  skip_cleanup: true
+  on:
+    branch: development
+after_success:
+- sh set_tags.sh
+
