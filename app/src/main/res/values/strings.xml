@@ -9,6 +9,8 @@
     <string name="food">Food</string>
     <string name="shelter">Shelter</string>
     <string name="victim">Victim</string>
+    <string name="others">Others</string>
+    <string name="person">Person Info</string>
     <string name="photo">Photo</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>

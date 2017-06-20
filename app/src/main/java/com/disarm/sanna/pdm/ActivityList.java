@@ -67,12 +67,12 @@ public class ActivityList extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_list);
         contextOfApplication = getApplicationContext();
         Intent myIntent = getIntent();
         type = myIntent.getStringExtra("IntentType");
         Log.v("type intent ",type);
+        setTitle(type);
         ttl = (EditText)findViewById(R.id.ttl);
         destination = (EditText)findViewById(R.id.destination);
         submit = (Button)findViewById(R.id.submit);

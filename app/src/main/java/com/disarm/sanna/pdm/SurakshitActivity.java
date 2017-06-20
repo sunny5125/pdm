@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.disarm.sanna.pdm.Adapters.MyAdapter;
+import com.disarm.sanna.pdm.Capture.PersonInfo;
 import com.disarm.sanna.pdm.Util.DividerItemDecoration;
 import com.disarm.sanna.pdm.Util.Reset;
 import com.disarm.sanna.pdm.location.LocationState;
@@ -37,7 +38,9 @@ public class SurakshitActivity extends AppCompatActivity {
     public static int[] prgmNameList = {R.string.health,
             R.string.food,
             R.string.shelter,
-            R.string.victim};
+            R.string.victim,
+            R.string.others,
+            R.string.person};
 
 
     public interface ClickListener {
@@ -74,14 +77,24 @@ public class SurakshitActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ActivityList.class);
                 if (position == 0) {
                     intent.putExtra("IntentType", "Health");
+                    startActivity(intent);
                 } else if (position == 1) {
                     intent.putExtra("IntentType", "Food");
+                    startActivity(intent);
                 } else if (position == 2) {
                     intent.putExtra("IntentType", "Shelter");
+                    startActivity(intent);
                 } else if (position == 3) {
                     intent.putExtra("IntentType", "Victim");
+                    startActivity(intent);
+                } else if (position == 4){
+                    intent.putExtra("IntentType", "Others");
+                    startActivity(intent);
+                }else if (position == 5){
+                    Intent i = new Intent(getApplicationContext(), PersonInfo.class);
+                    i.putExtra("IntentType", "PersonInfo");
+                    startActivity(i);
                 }
-                startActivity(intent);
             }
 
             @Override
