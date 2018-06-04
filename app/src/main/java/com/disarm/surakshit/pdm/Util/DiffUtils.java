@@ -25,8 +25,11 @@ public class DiffUtils {
 
 
     public static void createDiff(File source, File destination, Application app, Context context) throws IOException {
+        //source - sourceKML
+        //destination - latestKML
         File delta = Environment.getExternalStoragePublicDirectory("/DMS/Working/SurakshitDiff/"+getDeltaName(destination));
         try {
+            //delta -- diff file name
             JBDiff.bsdiff(source, destination, delta);
             MapFragment.parseKml(app,context);
         }

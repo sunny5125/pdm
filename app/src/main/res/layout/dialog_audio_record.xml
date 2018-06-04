@@ -1,55 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/record_button"
+    <ImageView
+        android:id="@+id/record_button_dialog"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/audio" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_recording_audio_80dp" />
 
-    <ImageButton
+    <ImageView
+        android:id="@+id/play_button_dialog"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:id="@+id/play_button"
-        android:layout_marginEnd="25dp"
-        android:layout_alignBottom="@+id/record_button"
+        android:layout_alignBottom="@+id/record_button_dialog"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/listen_audiobook_player"/>
+        android:layout_marginEnd="25dp"
+        android:src="@drawable/ic_play_audio_gray_40dp" />
 
-    <Button
-        style="@style/Widget.AppCompat.Button.Borderless"
+    <info.hoang8f.widget.FButton
+        android:id="@+id/record_dialog_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/back"
-        android:id="@+id/back"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentEnd="true" />
+        fbutton:cornerRadius="5dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="25dp"
+        android:textColor="@color/white"
+        android:layout_below="@+id/record_button_text"
+        android:text="@string/back" />
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/record_dialog_ok_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fbutton:cornerRadius="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/white"
+        android:layout_below="@+id/record_button_text"
+        android:text="@string/okay" />
 
     <TextView
+        android:id="@+id/record_button_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/record_button_dialog"
+        android:layout_centerHorizontal="true"
         android:text="@string/record"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/record_button"
-        android:layout_centerHorizontal="true" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Chronometer
         android:id="@+id/chronometer"
-        android:textColor="#4169E1"
-        android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/record_button"
+        android:layout_alignBottom="@+id/record_button_dialog"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="25dp" />
+        android:layout_marginStart="25dp"
+        android:textColor="#27ae60"
+        android:textSize="25sp" />
 
 </RelativeLayout>

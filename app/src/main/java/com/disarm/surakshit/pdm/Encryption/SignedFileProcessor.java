@@ -57,8 +57,7 @@ import java.util.Iterator;
  * <b>Note</b>: the example also makes use of PGP compression. If you are having difficulty getting it
  * to interoperate with other PGP programs try removing the use of compression first.
  */
-public class SignedFileProcessor
-{
+public class SignedFileProcessor {
     /*
      * verify the passed in file as being correctly signed.
      */
@@ -66,48 +65,43 @@ public class SignedFileProcessor
             InputStream in,
             InputStream keyIn,
             String outputFilePath)
-            throws Exception
-    {
+            throws Exception {
         in = PGPUtil.getDecoderStream(in);
 
-        JcaPGPObjectFactory            pgpFact = new JcaPGPObjectFactory(in);
+        JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(in);
 
-        PGPCompressedData           c1 = (PGPCompressedData)pgpFact.nextObject();
+        PGPCompressedData c1 = (PGPCompressedData) pgpFact.nextObject();
 
         pgpFact = new JcaPGPObjectFactory(c1.getDataStream());
 
-        PGPOnePassSignatureList     p1 = (PGPOnePassSignatureList)pgpFact.nextObject();
+        PGPOnePassSignatureList p1 = (PGPOnePassSignatureList) pgpFact.nextObject();
 
-        PGPOnePassSignature         ops = p1.get(0);
+        PGPOnePassSignature ops = p1.get(0);
 
-        PGPLiteralData              p2 = (PGPLiteralData)pgpFact.nextObject();
+        PGPLiteralData p2 = (PGPLiteralData) pgpFact.nextObject();
 
         InputStream dIn = p2.getInputStream();
-        int                         ch;
-        PGPPublicKeyRingCollection  pgpRing = new PGPPublicKeyRingCollection(PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
+        int ch;
+        PGPPublicKeyRingCollection pgpRing = new PGPPublicKeyRingCollection(PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
 
-        PGPPublicKey                key = pgpRing.getPublicKey(ops.getKeyID());
+        PGPPublicKey key = pgpRing.getPublicKey(ops.getKeyID());
         FileOutputStream out = new FileOutputStream(outputFilePath);
 
         ops.init(new JcaPGPContentVerifierBuilderProvider().setProvider(new BouncyCastleProvider()), key);
 
-        while ((ch = dIn.read()) >= 0)
-        {
-            ops.update((byte)ch);
+        while ((ch = dIn.read()) >= 0) {
+            ops.update((byte) ch);
             out.write(ch);
         }
 
         out.close();
 
-        PGPSignatureList            p3 = (PGPSignatureList)pgpFact.nextObject();
+        PGPSignatureList p3 = (PGPSignatureList) pgpFact.nextObject();
 
-        if (ops.verify(p3.get(0)))
-        {
+        if (ops.verify(p3.get(0))) {
             System.out.println("signature verified.");
             return true;
-        }
-        else
-        {
+        } else {
             System.out.println("signature verification failed.");
             return false;
         }
@@ -131,47 +125,43 @@ public class SignedFileProcessor
             String fileName,
             InputStream keyIn,
             OutputStream out,
-            char[]          pass,
-            boolean         armor)
-            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, PGPException, SignatureException
-    {
-        if (armor)
-        {
+            char[] pass,
+            boolean armor)
+            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, PGPException, SignatureException {
+        if (armor) {
             out = new ArmoredOutputStream(out);
         }
 
-        PGPSecretKey                pgpSec = PGPExampleUtil.readSecretKey(keyIn);
-        PGPPrivateKey               pgpPrivKey = pgpSec.extractPrivateKey(new JcePBESecretKeyDecryptorBuilder().setProvider(new BouncyCastleProvider()).build(pass));
-        PGPSignatureGenerator       sGen = new PGPSignatureGenerator(new JcaPGPContentSignerBuilder(pgpSec.getPublicKey().getAlgorithm(), PGPUtil.SHA1).setProvider(new BouncyCastleProvider()));
+        PGPSecretKey pgpSec = PGPExampleUtil.readSecretKey(keyIn);
+        PGPPrivateKey pgpPrivKey = pgpSec.extractPrivateKey(new JcePBESecretKeyDecryptorBuilder().setProvider(new BouncyCastleProvider()).build(pass));
+        PGPSignatureGenerator sGen = new PGPSignatureGenerator(new JcaPGPContentSignerBuilder(pgpSec.getPublicKey().getAlgorithm(), PGPUtil.SHA1).setProvider(new BouncyCastleProvider()));
 
         sGen.init(PGPSignature.BINARY_DOCUMENT, pgpPrivKey);
 
         Iterator it = pgpSec.getPublicKey().getUserIDs();
-        if (it.hasNext())
-        {
-            PGPSignatureSubpacketGenerator  spGen = new PGPSignatureSubpacketGenerator();
+        if (it.hasNext()) {
+            PGPSignatureSubpacketGenerator spGen = new PGPSignatureSubpacketGenerator();
 
-            spGen.setSignerUserID(false, (String)it.next());
+            spGen.setSignerUserID(false, (String) it.next());
             sGen.setHashedSubpackets(spGen.generate());
         }
 
-        PGPCompressedDataGenerator  cGen = new PGPCompressedDataGenerator(
+        PGPCompressedDataGenerator cGen = new PGPCompressedDataGenerator(
                 PGPCompressedData.ZLIB);
 
-        BCPGOutputStream            bOut = new BCPGOutputStream(cGen.open(out));
+        BCPGOutputStream bOut = new BCPGOutputStream(cGen.open(out));
 
         sGen.generateOnePassVersion(false).encode(bOut);
 
         File file = new File(fileName);
-        PGPLiteralDataGenerator     lGen = new PGPLiteralDataGenerator();
+        PGPLiteralDataGenerator lGen = new PGPLiteralDataGenerator();
         OutputStream lOut = lGen.open(bOut, PGPLiteralData.BINARY, file);
         FileInputStream fIn = new FileInputStream(file);
-        int                         ch;
+        int ch;
 
-        while ((ch = fIn.read()) >= 0)
-        {
+        while ((ch = fIn.read()) >= 0) {
             lOut.write(ch);
-            sGen.update((byte)ch);
+            sGen.update((byte) ch);
         }
 
         lGen.close();
@@ -180,8 +170,7 @@ public class SignedFileProcessor
 
         cGen.close();
 
-        if (armor)
-        {
+        if (armor) {
             out.close();
         }
     }
@@ -191,7 +180,7 @@ public class SignedFileProcessor
             String outputFilePath,
             String secretKeyPath,
             String secretKeyPasspharase
-    )  {
+    ) {
         Security.addProvider(new BouncyCastleProvider());
         InputStream keyIn = null;
 
@@ -217,8 +206,7 @@ public class SignedFileProcessor
             e.printStackTrace();
         } catch (SignatureException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -228,7 +216,7 @@ public class SignedFileProcessor
             String inputFilePath,
             String publicKeyPath,
             String outputFilePath
-    ){
+    ) {
 
         FileInputStream in = null;
         try {
@@ -244,7 +232,7 @@ public class SignedFileProcessor
         }
 
         try {
-            return verifyFile(in, keyIn,outputFilePath);
+            return verifyFile(in, keyIn, outputFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }

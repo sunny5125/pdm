@@ -5,14 +5,16 @@ import android.media.MediaPlayer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.disarm.surakshit.pdm.Chat.Message;
 import com.disarm.surakshit.pdm.R;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -26,21 +28,42 @@ public class OutgoingAudioHolders extends MessagesListAdapter.BaseMessageViewHol
     SeekBar seekBar;
     ImageButton imageButton;
     Context context;
+
     public OutgoingAudioHolders(View itemView) {
         super(itemView);
         context = itemView.getContext();
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setLooping(false);
         seekBar = (SeekBar) itemView.findViewById(R.id.outgoing_seekbar);
         imageButton = (ImageButton) itemView.findViewById(R.id.outgoing_imageButton);
+    }
+
+    @Override
+    public void onBind(Message message) {
+        try {
+            File f = Environment.getExternalStoragePublicDirectory(message.getUrl());
+            if (!f.exists()) {
+                f = Environment.getExternalStoragePublicDirectory("DMS/tempMedia/" + FilenameUtils.getName(message.getUrl()));
+            }
+            Log.d("AUDIO_CHAT", "fileName:" + f.getAbsolutePath());
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setDataSource(f.getAbsolutePath());
+            mediaPlayer.prepareAsync();
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    seekBar.setMax(mediaPlayer.getDuration());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mediaPlayer.isPlaying()){
+                if (mediaPlayer.isPlaying()) {
                     imageButton.setImageResource(android.R.drawable.ic_media_play);
                     mediaPlayer.pause();
-                }
-                else{
+                } else {
                     imageButton.setImageResource(android.R.drawable.ic_media_pause);
                     mediaPlayer.start();
                 }
@@ -59,7 +82,7 @@ public class OutgoingAudioHolders extends MessagesListAdapter.BaseMessageViewHol
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser)
+                if (fromUser)
                     mediaPlayer.seekTo(progress);
             }
 
@@ -73,38 +96,19 @@ public class OutgoingAudioHolders extends MessagesListAdapter.BaseMessageViewHol
 
             }
         });
-    }
-
-    @Override
-    public void onBind(Message message) {
-        try {
-            File f = Environment.getExternalStoragePublicDirectory(message.getUrl());
-            mediaPlayer.setDataSource(f.getAbsolutePath());
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    seekBar.setMax(mediaPlayer.getDuration());
-                }
-            });
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
         HandlerThread ht = new HandlerThread("Audio Thread");
         ht.start();
         final Handler h = new Handler(ht.getLooper());
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                if(mediaPlayer.isPlaying()){
+                if (mediaPlayer.isPlaying()) {
                     seekBar.setProgress(mediaPlayer.getCurrentPosition());
                 }
-                h.postDelayed(this,1000);
+                h.postDelayed(this, 1000);
             }
         };
-        h.postDelayed(run,1000);
+        h.postDelayed(run, 1000);
     }
-
 
 }

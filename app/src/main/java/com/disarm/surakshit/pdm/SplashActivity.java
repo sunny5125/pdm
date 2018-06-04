@@ -18,13 +18,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.disarm.surakshit.pdm.Util.Params;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.spec.EncodedKeySpec;
 
 //First Activity
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {

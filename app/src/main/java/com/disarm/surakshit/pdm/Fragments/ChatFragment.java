@@ -226,6 +226,7 @@ public class ChatFragment extends Fragment {
                 }
             });
         }
+
         else if(dialogID.contains(author.getId()) && unread != unreadMap.get(author.getId())){
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -266,9 +267,9 @@ public class ChatFragment extends Fragment {
 
     //Add dialogs available in the db
     private void addDialogList() throws ParseException {
+
         if(getActivity()==null)
             return;
-
 
         final Box<Sender> senderBox = ((App)getActivity().getApplication()).getBoxStore().boxFor(Sender.class);
         final Box<Receiver> receiverBox = ((App)getActivity().getApplication()).getBoxStore().boxFor(Receiver.class);
@@ -287,6 +288,7 @@ public class ChatFragment extends Fragment {
             if(s.getNumber().contains("Volunteer") || s.getNumber().contains("Users")){
                 continue;
             }
+            //number I have messaged and got a reply
             if(receiverHashMap.containsKey(s.getNumber())){
                 Receiver r = receiverHashMap.get(s.getNumber());
                 Author other = new Author(s.getNumber(),ContactUtil.getContactName(getActivity().getApplicationContext(),s.getNumber()));
@@ -307,6 +309,7 @@ public class ChatFragment extends Fragment {
                 addDialog(msg,other,unread);
                 receiverDone.add(r.getNumber());
             }
+            //numbers I have messaged
             else{
                 try {
                     Author author = new Author(s.getNumber(), ContactUtil.getContactName(getActivity().getApplicationContext(), s.getNumber()));

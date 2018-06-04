@@ -60,15 +60,13 @@ import java.util.Iterator;
  * Note 2: if an empty file name has been specified in the literal data object contained in the
  * encrypted packet a file with the name filename.out will be generated in the current working directory.
  */
-public class KeyBasedFileProcessor
-{
+public class KeyBasedFileProcessor {
     private static void decryptFile(
             String inputFileName,
             String keyFileName,
             char[] passwd,
             String defaultFileName)
-            throws IOException, NoSuchProviderException
-    {
+            throws IOException, NoSuchProviderException {
         InputStream in = new BufferedInputStream(new FileInputStream(inputFileName));
         InputStream keyIn = new BufferedInputStream(new FileInputStream(keyFileName));
         decryptFile(in, keyIn, passwd, defaultFileName);
@@ -82,72 +80,62 @@ public class KeyBasedFileProcessor
     private static void decryptFile(
             InputStream in,
             InputStream keyIn,
-            char[]      passwd,
+            char[] passwd,
             String defaultFileName)
-            throws IOException, NoSuchProviderException
-    {
+            throws IOException, NoSuchProviderException {
         in = PGPUtil.getDecoderStream(in);
 
-        try
-        {
+        try {
             JcaPGPObjectFactory pgpF = new JcaPGPObjectFactory(in);
-            PGPEncryptedDataList    enc;
+            PGPEncryptedDataList enc;
 
             Object o = pgpF.nextObject();
             //
             // the first object might be a PGP marker packet.
             //
-            if (o instanceof PGPEncryptedDataList)
-            {
-                enc = (PGPEncryptedDataList)o;
-            }
-            else
-            {
-                enc = (PGPEncryptedDataList)pgpF.nextObject();
+            if (o instanceof PGPEncryptedDataList) {
+                enc = (PGPEncryptedDataList) o;
+            } else {
+                enc = (PGPEncryptedDataList) pgpF.nextObject();
             }
 
             //
             // find the secret key
             //
             Iterator it = enc.getEncryptedDataObjects();
-            PGPPrivateKey               sKey = null;
-            PGPPublicKeyEncryptedData   pbe = null;
-            PGPSecretKeyRingCollection  pgpSec = new PGPSecretKeyRingCollection(
+            PGPPrivateKey sKey = null;
+            PGPPublicKeyEncryptedData pbe = null;
+            PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(
                     PGPUtil.getDecoderStream(keyIn), new JcaKeyFingerprintCalculator());
 
-            while (sKey == null && it.hasNext())
-            {
-                pbe = (PGPPublicKeyEncryptedData)it.next();
+            while (sKey == null && it.hasNext()) {
+                pbe = (PGPPublicKeyEncryptedData) it.next();
 
                 sKey = PGPExampleUtil.findSecretKey(pgpSec, pbe.getKeyID(), passwd);
             }
 
-            if (sKey == null)
-            {
+            if (sKey == null) {
                 throw new IllegalArgumentException("secret key for message not found.");
             }
 
             InputStream clear = pbe.getDataStream(new JcePublicKeyDataDecryptorFactoryBuilder().setProvider(new BouncyCastleProvider()).build(sKey));
 
-            JcaPGPObjectFactory    plainFact = new JcaPGPObjectFactory(clear);
+            JcaPGPObjectFactory plainFact = new JcaPGPObjectFactory(clear);
 
             Object message = plainFact.nextObject();
 
-            if (message instanceof PGPCompressedData)
-            {
-                PGPCompressedData   cData = (PGPCompressedData)message;
-                JcaPGPObjectFactory    pgpFact = new JcaPGPObjectFactory(cData.getDataStream());
+            if (message instanceof PGPCompressedData) {
+                PGPCompressedData cData = (PGPCompressedData) message;
+                JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(cData.getDataStream());
 
                 message = pgpFact.nextObject();
             }
 
-            if (message instanceof PGPLiteralData)
-            {
-                PGPLiteralData ld = (PGPLiteralData)message;
+            if (message instanceof PGPLiteralData) {
+                PGPLiteralData ld = (PGPLiteralData) message;
 
                 String outFileName = ld.getFileName();
-                if (outFileName.length() == 0)
-                {
+                if (outFileName.length() == 0) {
                     outFileName = defaultFileName;
                 }
 
@@ -161,57 +149,43 @@ public class KeyBasedFileProcessor
 //                File latestKml = Environment.getExternalStoragePublicDirectory("DMS/KML/Dest/LatestKml/"+FilenameUtils.getBaseName(outFileName)+"_0.kml");
 //                FileUtils.copyFile(file,latestKml);
 //                fOut.close();
-                File file = Environment.getExternalStoragePublicDirectory("DMS/tempDecrypt/"+outFileName);
+                File file = Environment.getExternalStoragePublicDirectory("DMS/tempDecrypt/" + outFileName);
                 OutputStream fOut = new BufferedOutputStream(new FileOutputStream(file.getAbsolutePath()));
                 Streams.pipeAll(unc, fOut);
                 fOut.close();
                 String source = file.getName().split("_")[1];
-                String pubKey = Environment.getExternalStoragePublicDirectory("DMS/Working/pgpKey/pub_"+source+".bgp").getAbsolutePath();
-                if(file.getName().contains("asc")){
+                String pubKey = Environment.getExternalStoragePublicDirectory("DMS/Working/pgpKey/pub_" + source + ".bgp").getAbsolutePath();
+                if (file.getName().contains("asc")) {
                     SignedFileProcessor sfg = new SignedFileProcessor();
-                    sfg.verifyFile(file.getAbsolutePath(),pubKey,defaultFileName+".kml");
-                    File latestKml = Environment.getExternalStoragePublicDirectory("DMS/KML/Dest/LatestKml/"+FilenameUtils.getBaseName(outFileName)+"_0.kml");
-                    File s = Environment.getExternalStoragePublicDirectory(defaultFileName+".kml");
-                    FileUtils.copyFile(s,latestKml);
+                    sfg.verifyFile(file.getAbsolutePath(), pubKey, defaultFileName + ".kml");
+                    File latestKml = Environment.getExternalStoragePublicDirectory("DMS/KML/Dest/LatestKml/" + FilenameUtils.getBaseName(outFileName) + "_0.kml");
+                    File s = Environment.getExternalStoragePublicDirectory(defaultFileName + ".kml");
+                    FileUtils.copyFile(s, latestKml);
                     FileUtils.forceDelete(file);
+                } else {
+                    File s = Environment.getExternalStoragePublicDirectory("DMS/KML/Source/SourceKml/" + file.getName());
+                    FileUtils.moveFile(file, s);
+                    File latestKml = Environment.getExternalStoragePublicDirectory("DMS/KML/Dest/LatestKml/" + FilenameUtils.getBaseName(outFileName) + "_0.kml");
+                    FileUtils.copyFile(s, latestKml);
                 }
-                else{
-                    File s = Environment.getExternalStoragePublicDirectory("DMS/KML/Source/SourceKml/"+file.getName());
-                    FileUtils.moveFile(file,s);
-                    File latestKml = Environment.getExternalStoragePublicDirectory("DMS/KML/Dest/LatestKml/"+FilenameUtils.getBaseName(outFileName)+"_0.kml");
-                    FileUtils.copyFile(s,latestKml);
-                }
-            }
-            else if (message instanceof PGPOnePassSignatureList)
-            {
+            } else if (message instanceof PGPOnePassSignatureList) {
                 throw new PGPException("encrypted message contains a signed message - not literal data.");
-            }
-            else
-            {
+            } else {
                 throw new PGPException("message is not a simple encrypted file - type unknown.");
             }
 
-            if (pbe.isIntegrityProtected())
-            {
-                if (!pbe.verify())
-                {
+            if (pbe.isIntegrityProtected()) {
+                if (!pbe.verify()) {
                     System.err.println("message failed integrity check");
-                }
-                else
-                {
+                } else {
                     System.err.println("message integrity check passed");
                 }
-            }
-            else
-            {
+            } else {
                 System.err.println("no message integrity check");
             }
-        }
-        catch (PGPException e)
-        {
+        } catch (PGPException e) {
             System.err.println(e);
-            if (e.getUnderlyingException() != null)
-            {
+            if (e.getUnderlyingException() != null) {
                 e.getUnderlyingException().printStackTrace();
             }
         }
@@ -221,10 +195,9 @@ public class KeyBasedFileProcessor
             String outputFileName,
             String inputFileName,
             String encKeyFileName,
-            boolean         armor,
-            boolean         withIntegrityCheck)
-            throws IOException, NoSuchProviderException, PGPException
-    {
+            boolean armor,
+            boolean withIntegrityCheck)
+            throws IOException, NoSuchProviderException, PGPException {
         OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFileName));
         PGPPublicKey encKey = PGPExampleUtil.readPublicKey(encKeyFileName);
         encryptFile(out, inputFileName, encKey, armor, withIntegrityCheck);
@@ -234,18 +207,15 @@ public class KeyBasedFileProcessor
     private static void encryptFile(
             OutputStream out,
             String fileName,
-            PGPPublicKey    encKey,
-            boolean         armor,
-            boolean         withIntegrityCheck)
-            throws IOException, NoSuchProviderException
-    {
-        if (armor)
-        {
+            PGPPublicKey encKey,
+            boolean armor,
+            boolean withIntegrityCheck)
+            throws IOException, NoSuchProviderException {
+        if (armor) {
             out = new ArmoredOutputStream(out);
         }
 
-        try
-        {
+        try {
             byte[] bytes = PGPExampleUtil.compressFile(fileName, CompressionAlgorithmTags.ZIP);
 
             PGPEncryptedDataGenerator encGen = new PGPEncryptedDataGenerator(
@@ -258,16 +228,12 @@ public class KeyBasedFileProcessor
             cOut.write(bytes);
             cOut.close();
 
-            if (armor)
-            {
+            if (armor) {
                 out.close();
             }
-        }
-        catch (PGPException e)
-        {
+        } catch (PGPException e) {
             System.err.println(e);
-            if (e.getUnderlyingException() != null)
-            {
+            if (e.getUnderlyingException() != null) {
                 e.getUnderlyingException().printStackTrace();
             }
         }
@@ -275,37 +241,25 @@ public class KeyBasedFileProcessor
 
     public static void main(
             String[] args)
-            throws Exception
-    {
+            throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
-        if (args.length == 0)
-        {
+        if (args.length == 0) {
             System.err.println("usage: KeyBasedFileProcessor -e|-d [-a|ai] file [secretKeyFile passPhrase|pubKeyFile]");
             return;
         }
 
-        if (args[0].equals("-e"))
-        {
-            if (args[1].equals("-a") || args[1].equals("-ai") || args[1].equals("-ia"))
-            {
+        if (args[0].equals("-e")) {
+            if (args[1].equals("-a") || args[1].equals("-ai") || args[1].equals("-ia")) {
                 encryptFile(args[2] + ".asc", args[2], args[3], true, (args[1].indexOf('i') > 0));
-            }
-            else if (args[1].equals("-i"))
-            {
+            } else if (args[1].equals("-i")) {
                 encryptFile(args[2] + ".bpg", args[2], args[3], false, true);
-            }
-            else
-            {
+            } else {
                 encryptFile(args[1] + ".bpg", args[1], args[2], false, false);
             }
-        }
-        else if (args[0].equals("-d"))
-        {
+        } else if (args[0].equals("-d")) {
             decryptFile(args[1], args[2], args[3].toCharArray(), new File(args[1]).getName() + ".out");
-        }
-        else
-        {
+        } else {
             System.err.println("usage: KeyBasedFileProcessor -d|-e [-a|ai] file [secretKeyFile passPhrase|pubKeyFile]");
         }
     }
@@ -314,9 +268,8 @@ public class KeyBasedFileProcessor
             String inputFilePath,
             String publicKeyPath,
             String outputFilePath
-            )
-            throws Exception
-    {
+    )
+            throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         encryptFile(outputFilePath, inputFilePath, publicKeyPath, false, false);
     }
@@ -325,8 +278,7 @@ public class KeyBasedFileProcessor
             String inputFilePath,
             String keyFilePath,
             String passphrase)
-            throws Exception
-    {
+            throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         File f = Environment.getExternalStoragePublicDirectory(inputFilePath);
         decryptFile(inputFilePath, keyFilePath, passphrase.toCharArray(), f.getAbsolutePath());

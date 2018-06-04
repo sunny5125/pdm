@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/group"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/group"
-    android:background="@drawable/round_background_incoming"
+    android:layout_marginEnd="100dp"
     android:layout_marginStart="5dp"
-    android:layout_marginEnd="100dp">
+    android:background="@drawable/round_background_incoming">
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -24,11 +24,10 @@
             android:id="@+id/incoming_video_play"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:paddingBottom="10dp"
             android:layout_gravity="center_horizontal|center_vertical"
-            android:visibility="visible"
-            android:src="@android:drawable/ic_media_play" />
+            android:paddingBottom="10dp"
+            android:src="@android:drawable/ic_media_play"
+            android:visibility="visible" />
 
     </FrameLayout>
-
 </RelativeLayout>

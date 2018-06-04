@@ -79,6 +79,7 @@
     <string name="draw">DRAW</string>
     <string name="save_my_position">SAVE MY POSITION</string>
     <string name="record">Record</string>
+    <string name="recording">Recording…</string>
     <string name="no_location"> We couldn\'t find your location!!!  </string>
     <string name="no_location_des"> 1. Drag the marker to your approximate current location\n2. Tap on the marker when you are done </string>
     <string name="okay"> Okay </string>

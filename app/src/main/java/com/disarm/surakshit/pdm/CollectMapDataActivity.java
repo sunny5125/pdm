@@ -104,6 +104,7 @@ public class CollectMapDataActivity extends AppCompatActivity {
         }
         else
             kml.mKmlRoot.setExtendedData("total", "0");
+        //initialize mapView
         setMapData();
         fab = findViewById(R.id.fab_add_data);
         fab.setOnClickListener(new View.OnClickListener() {

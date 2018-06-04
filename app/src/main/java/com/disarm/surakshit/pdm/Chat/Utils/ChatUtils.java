@@ -1,12 +1,8 @@
 package com.disarm.surakshit.pdm.Chat.Utils;
 
-import android.os.Environment;
-import android.widget.Toast;
-
 import com.disarm.surakshit.pdm.Chat.Author;
 import com.disarm.surakshit.pdm.Chat.ChatActivity;
 import com.disarm.surakshit.pdm.Chat.Message;
-import com.disarm.surakshit.pdm.Util.Params;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.preference.PreferenceManager;
@@ -15,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +27,8 @@ import com.disarm.surakshit.pdm.Util.CustomInfoWindow;
 import com.disarm.surakshit.pdm.Util.LatLonUtil;
 import com.disarm.surakshit.pdm.location.MLocation;
 
-import org.apache.commons.io.FileUtils;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.kml.KmlDocument;
-import org.osmdroid.bonuspack.kml.Style;
-import org.osmdroid.bonuspack.kml.StyleMap;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
@@ -50,10 +45,8 @@ import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -198,6 +191,7 @@ public class MapFragment extends Fragment {
                         ByteArrayInputStream is = new ByteArrayInputStream(kmlString.getBytes());
                         KmlDocument kml = new KmlDocument();
                         kml.parseKMLStream(is,null);
+
                         FolderOverlay overlay = (FolderOverlay) kml.mKmlRoot.buildOverlay(map,null,null,kml);
                         Object[] objects = extractPointsFromOverlay(overlay);
                         HashMap<String,String> pointsToId = (HashMap<String, String>) objects[1];

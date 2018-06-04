@@ -34,8 +34,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:visibility="invisible"
         android:text="@string/draw"
+        android:visibility="invisible"
         app:layout_anchorGravity="top|left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

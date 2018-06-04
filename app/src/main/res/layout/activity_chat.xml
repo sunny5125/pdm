@@ -10,8 +10,8 @@
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
-        android:layout_above="@+id/input"/>
+        android:layout_above="@+id/input"
+        android:background="@drawable/background" />
 
     <View
         android:layout_width="match_parent"
@@ -19,22 +19,22 @@
         android:layout_above="@+id/input"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/gray_light"/>
+        android:background="@color/gray_light" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:inputHint="@string/hint_enter_a_message"
-        app:showAttachmentButton="true"
         app:attachmentButtonDefaultIconColor="@color/green"
         app:attachmentButtonDefaultIconPressedColor="@color/green_dark"
         app:inputButtonHeight="30dp"
         app:inputButtonMargin="16dp"
         app:inputButtonWidth="30dp"
+        app:inputHint="@string/hint_enter_a_message"
         app:inputMaxLines="3"
         app:inputTextColor="@color/black"
-        app:inputTextSize="18sp"/>
+        app:inputTextSize="18sp"
+        app:showAttachmentButton="true" />
 
 </RelativeLayout>
